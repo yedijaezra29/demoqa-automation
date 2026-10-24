@@ -1,0 +1,49 @@
+{
+  "student": {
+    "firstName": "Budi",
+    "lastName": "Santoso",
+    "email": "budi.santoso@example.com",
+    "gender": "Male",
+    "mobile": "0812345678",
+    "dateOfBirth": { "day": 15, "month": "May", "year": 2000 },
+    "subjects": ["Maths", "English"],
+    "hobbies": ["Sports", "Music"],
+    "picture": "test-data/files/foto.png",
+    "address": "Jl. Merdeka No. 1, Jakarta",
+    "state": "NCR",
+    "city": "Delhi"
+  },
+  "confirmation": {
+    "Student Name": "Budi Santoso",
+    "Student Email": "budi.santoso@example.com",
+    "Gender": "Male",
+    "Mobile": "0812345678",
+    "Date of Birth": "15 May,2000",
+    "Subjects": "Maths, English",
+    "Hobbies": "Sports, Music",
+    "Picture": "foto.png",
+    "Address": "Jl. Merdeka No. 1, Jakarta",
+    "State and City": "NCR Delhi"
+  },
+  "requiredOnlyConfirmation": {
+    "Student Name": "Budi Santoso",
+    "Student Email": "",
+    "Gender": "Male",
+    "Mobile": "0812345678",
+    "Subjects": "",
+    "Hobbies": "",
+    "Picture": "",
+    "Address": "",
+    "State and City": ""
+  },
+  "longMobile": { "typed": "08123456789", "saved": "0812345678" },
+  "requiredFields": ["First Name", "Last Name", "Gender", "Mobile"],
+  "invalidInputs": {
+    "First Name kosong": { "field": "First Name", "value": "" },
+    "Last Name kosong": { "field": "Last Name", "value": "" },
+    "Mobile kurang dari 10 digit": { "field": "Mobile", "value": "081234567" },
+    "Mobile berisi huruf": { "field": "Mobile", "value": "abcdefghij" },
+    "email tanpa @": { "field": "Email", "value": "budi.example.com" },
+    "Gender tidak dipilih": { "field": "Gender" }
+  }
+}

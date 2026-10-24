@@ -1,0 +1,30 @@
+{
+  "name": "demoqa-automation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --import tsx tools/report/cli.ts run test:raw",
+    "typecheck": "tsc --noEmit -p .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run typecheck && npm run format:check && npm run test:unit",
+    "test:raw": "node --import tsx ./node_modules/@cucumber/cucumber/bin/cucumber-js",
+    "test:webtables": "node --import tsx tools/report/cli.ts run test:raw --tags @webtables",
+    "test:droppable": "node --import tsx tools/report/cli.ts run test:raw --tags @droppable",
+    "test:resizable": "node --import tsx tools/report/cli.ts run test:raw --tags @resizable",
+    "test:practice-form": "node --import tsx tools/report/cli.ts run test:raw --tags @practice-form",
+    "report": "node --import tsx tools/report/cli.ts generate",
+    "report:open": "node --import tsx tools/report/cli.ts open",
+    "report:clean": "node --import tsx tools/report/cli.ts clean",
+    "test:unit": "node --import tsx --test tools/report/failure-message.test.ts",
+    "suite": "node --import tsx tools/suite.ts"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "12.9.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.3",
+    "prettier": "3.9.9",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

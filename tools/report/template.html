@@ -1,0 +1,2993 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test Execution Report</title>
+    <style>
+      :root {
+        --code-col: 92px;
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --subtle: #f7f8fc;
+        --border: #e2e6ee;
+        --rule: #edf0f5;
+        --text: #0f172a;
+        --muted: #586377;
+        --track: #e6eaf1;
+
+        --navy: #0f1e45;
+        --navy-tile: #1f2d55;
+        --navy-line: #2c3b66;
+        --on-navy: #ffffff;
+        --on-navy-muted: #b4c0e0;
+
+        --accent: #4338ca;
+        --accent-hover: #3730a3;
+        --accent-soft: #eceefe;
+
+        --pass: #138a43;
+        --pass-ink: #166534;
+        --pass-soft: #e3f6ea;
+        --pass-light: #5ee69a;
+
+        --fail: #dc2626;
+        --fail-ink: #b42318;
+        --fail-soft: #fdebe9;
+        --fail-light: #ff9b93;
+
+        --skip: #b86e00;
+        --skip-ink: #9a4a06;
+        --skip-soft: #fdf3dc;
+        --skip-light: #fcd34d;
+
+        --neutral-ink: #475569;
+        --neutral-soft: #edf0f5;
+
+        --mono:
+          ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+        --sans:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        --radius: 14px;
+        --shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      [hidden] {
+        display: none !important;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 14.5px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .page {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 20px 24px 48px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        background: var(--navy);
+        border-radius: 18px;
+        color: var(--on-navy);
+        margin-bottom: 16px;
+        overflow: hidden;
+      }
+      .hero :focus-visible {
+        outline-color: #ffffff;
+      }
+
+      .hero-top {
+        align-items: center;
+        border-bottom: 1px solid var(--navy-line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px 22px;
+        padding: 18px 28px;
+      }
+      .wordmark {
+        border-right: 1px solid var(--navy-line);
+        flex: 0 0 auto;
+        line-height: 1.05;
+        padding-right: 22px;
+      }
+      .wordmark .w1 {
+        color: var(--on-navy-muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .wordmark .w2 {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+      }
+      .hero-title {
+        flex: 1 1 300px;
+        min-width: 0;
+      }
+      .hero-title h1 {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        margin: 0;
+      }
+      .hero-sub {
+        color: var(--on-navy-muted);
+        font-size: 13px;
+      }
+      .hero-sub strong {
+        color: var(--on-navy);
+        font-weight: 600;
+      }
+      .hero-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .stamp {
+        color: var(--on-navy-muted);
+        font-size: 13px;
+      }
+      .stamp b {
+        color: var(--on-navy);
+        font-family: var(--mono);
+        font-weight: 500;
+      }
+
+      .hero-body {
+        align-items: center;
+        display: grid;
+        gap: 24px 36px;
+        grid-template-columns: auto minmax(0, 1fr);
+        padding: 28px;
+      }
+      .hero-ring {
+        display: block;
+      }
+      .verdict-headline {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        line-height: 1.2;
+        margin: 0 0 6px;
+      }
+      .verdict-headline .is-passed {
+        color: var(--pass-light);
+      }
+      .verdict-headline .is-failed {
+        color: var(--fail-light);
+      }
+      .verdict-headline .is-skipped {
+        color: var(--skip-light);
+      }
+      .verdict-detail {
+        color: var(--on-navy-muted);
+        font-size: 15px;
+        margin: 0;
+      }
+      .verdict-detail strong {
+        color: var(--on-navy);
+        font-weight: 650;
+      }
+      .verdict-attention {
+        color: var(--on-navy);
+        font-size: 14px;
+        margin: 10px 0 0;
+      }
+      .verdict-attention b {
+        color: var(--fail-light);
+      }
+
+      .tiles {
+        display: grid;
+        gap: 12px;
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .tile {
+        background: var(--navy-tile);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .tile-value {
+        font-size: 30px;
+        font-variant-numeric: tabular-nums;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.1;
+      }
+      .tile-label {
+        color: var(--on-navy-muted);
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .tile.is-passed .tile-value {
+        color: var(--pass-light);
+      }
+      .tile.is-failed .tile-value {
+        color: var(--fail-light);
+      }
+      .tile.is-skipped .tile-value {
+        color: var(--skip-light);
+      }
+      .tile.is-quiet .tile-value {
+        color: var(--on-navy);
+      }
+
+      .btn {
+        align-items: center;
+        background: var(--accent);
+        border: 1px solid var(--accent);
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        font-family: inherit;
+        font-size: 13.5px;
+        font-weight: 650;
+        gap: 8px;
+        justify-content: center;
+        min-height: 40px;
+        padding: 8px 16px;
+      }
+      .btn:hover {
+        background: var(--accent-hover);
+      }
+      .btn-light {
+        background: #ffffff;
+        border-color: #ffffff;
+        color: var(--navy);
+      }
+      .btn-light:hover {
+        background: #e6eaf6;
+      }
+      .btn-ghost {
+        background: var(--card);
+        border-color: var(--border);
+        color: var(--neutral-ink);
+      }
+      .btn-ghost:hover {
+        background: var(--subtle);
+      }
+
+      .legend {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 22px;
+        margin-bottom: 16px;
+        padding: 14px 22px;
+      }
+      .legend-title {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .legend-item {
+        align-items: center;
+        color: var(--muted);
+        display: inline-flex;
+        font-size: 13px;
+        gap: 8px;
+      }
+      .legend-item b {
+        color: var(--text);
+        font-weight: 650;
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 16px;
+        padding: 8px;
+      }
+      .tab {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        border-radius: 10px;
+        color: var(--neutral-ink);
+        cursor: pointer;
+        display: inline-flex;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        gap: 9px;
+        min-height: 42px;
+        padding: 8px 16px;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        background: var(--subtle);
+      }
+      .tab[aria-selected='true'] {
+        background: var(--accent);
+        color: #ffffff;
+      }
+      .tab .count {
+        background: var(--neutral-soft);
+        border-radius: 6px;
+        color: var(--neutral-ink);
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 1px 7px;
+      }
+      .tab .count.is-alert {
+        background: var(--fail-soft);
+        color: var(--fail-ink);
+      }
+      .tab[aria-selected='true'] .count {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+
+      .split {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        margin-bottom: 16px;
+      }
+      .split > .is-sticky {
+        align-self: start;
+        position: sticky;
+        top: 16px;
+      }
+      .stack {
+        margin-bottom: 16px;
+      }
+      .section-head {
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        justify-content: space-between;
+        padding: 16px 22px;
+      }
+      .section-head h2 {
+        flex: 1 0 auto;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        margin: 0;
+      }
+      .section-head .hint {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .section-body {
+        padding: 16px 22px 20px;
+      }
+
+      .attention {
+        border-color: #f4c7c2;
+        overflow: hidden;
+      }
+      .attention .section-head {
+        background: var(--fail-soft);
+        border-bottom-color: #f4c7c2;
+      }
+      .attention .section-head h2 {
+        color: var(--fail-ink);
+      }
+      .attention-row {
+        align-items: center;
+        background: none;
+        border: 0;
+        border-bottom: 1px solid var(--rule);
+        color: inherit;
+        cursor: pointer;
+        display: grid;
+        font-family: inherit;
+        gap: 6px 14px;
+        grid-template-columns: var(--code-col) minmax(0, 1fr) auto;
+        padding: 14px 22px;
+        text-align: left;
+        width: 100%;
+      }
+      .attention-row:last-child {
+        border-bottom: 0;
+      }
+      .attention-row:hover {
+        background: var(--subtle);
+      }
+      .attention-name {
+        display: block;
+        font-size: 15px;
+        font-weight: 650;
+      }
+      .attention-step {
+        color: var(--muted);
+        display: block;
+        font-size: 13px;
+      }
+      .attention-error {
+        color: var(--fail-ink);
+        display: block;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .attention-open {
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+
+      .all-clear {
+        align-items: center;
+        background: var(--pass-soft);
+        border-color: #bfe6cd;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 22px;
+      }
+      .all-clear b {
+        color: var(--pass-ink);
+      }
+
+      .feature {
+        border-bottom: 1px solid var(--rule);
+        padding: 14px 0;
+      }
+      .feature:first-child {
+        padding-top: 0;
+      }
+      .feature:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .feature-head {
+        align-items: baseline;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 12px;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .feature-name {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .feature-tally {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .feature-tally b {
+        color: var(--text);
+      }
+      .feature .meter {
+        margin-bottom: 8px;
+      }
+
+      .case-row {
+        align-items: center;
+        background: none;
+        border: 0;
+        border-radius: 10px;
+        color: inherit;
+        cursor: pointer;
+        display: grid;
+        font-family: inherit;
+        gap: 12px;
+        grid-template-columns: 84px var(--code-col) minmax(0, 1fr) auto;
+        padding: 9px 8px;
+        text-align: left;
+        width: 100%;
+      }
+      .case-row:hover {
+        background: var(--subtle);
+      }
+      .row-name {
+        font-size: 14px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .row-steps {
+        color: var(--muted);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .row-steps b {
+        color: var(--text);
+        font-weight: 650;
+      }
+
+      .meter {
+        background: var(--track);
+        border-radius: 999px;
+        display: flex;
+        gap: 2px;
+        height: 10px;
+        overflow: hidden;
+      }
+      .meter span {
+        display: block;
+        height: 100%;
+      }
+
+      .pill {
+        align-items: center;
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: 11.5px;
+        font-weight: 700;
+        justify-content: center;
+        padding: 3px 10px;
+        white-space: nowrap;
+      }
+      .pill-passed {
+        background: var(--pass-soft);
+        color: var(--pass-ink);
+      }
+      .pill-failed {
+        background: var(--fail-soft);
+        color: var(--fail-ink);
+      }
+      .pill-skipped {
+        background: var(--skip-soft);
+        color: var(--skip-ink);
+      }
+      .pill-neutral {
+        background: var(--neutral-soft);
+        color: var(--neutral-ink);
+      }
+
+      .code-chip {
+        background: var(--neutral-soft);
+        border-radius: 7px;
+        color: var(--neutral-ink);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 3px 8px;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .time-chip {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12.5px;
+        white-space: nowrap;
+      }
+      .feature-chip {
+        background: var(--neutral-soft);
+        border-radius: 6px;
+        color: var(--neutral-ink);
+        font-size: 11.5px;
+        font-weight: 650;
+        padding: 2px 7px;
+        white-space: nowrap;
+      }
+
+      .donuts {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .donut-card {
+        background: var(--subtle);
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+      }
+      .donut-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0 0 10px;
+      }
+      .donut {
+        display: block;
+        margin: 0 auto;
+      }
+      .keys {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        justify-content: center;
+        margin-top: 12px;
+      }
+      .keys.is-left {
+        justify-content: flex-start;
+        margin-top: 16px;
+      }
+      .key {
+        align-items: center;
+        color: var(--muted);
+        display: inline-flex;
+        font-size: 13px;
+        gap: 6px;
+      }
+      .key b {
+        color: var(--text);
+      }
+      .key i {
+        border-radius: 3px;
+        display: inline-block;
+        flex: 0 0 auto;
+        height: 10px;
+        width: 10px;
+      }
+
+      .duration-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 520px;
+        overflow-y: auto;
+      }
+      .duration-item {
+        align-items: center;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(0, 300px) minmax(0, 1fr) 70px;
+      }
+      .duration-item .label {
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .duration-item .label b {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .duration-item .value {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12.5px;
+        text-align: right;
+      }
+
+      .toolbar {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .field {
+        background: var(--subtle);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 13.5px;
+        min-height: 40px;
+        padding: 8px 12px;
+      }
+      .field:focus-visible {
+        background: var(--card);
+        border-color: var(--accent);
+        outline: 2px solid var(--accent);
+        outline-offset: 0;
+      }
+      input.field {
+        min-width: 260px;
+      }
+      .field::placeholder {
+        color: var(--muted);
+        opacity: 1;
+      }
+      select.field {
+        -webkit-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23586377' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-position: right 11px center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        padding-right: 34px;
+      }
+
+      .case {
+        border-bottom: 1px solid var(--border);
+      }
+      .case:last-child {
+        border-bottom: 0;
+      }
+      .case-head {
+        align-items: center;
+        background: none;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        display: grid;
+        font-family: inherit;
+        gap: 14px;
+        grid-template-columns:
+          18px 84px var(--code-col) minmax(0, 1fr)
+          auto auto;
+        padding: 14px 22px;
+        text-align: left;
+        width: 100%;
+      }
+      .case-head:hover {
+        background: var(--subtle);
+      }
+      .case-head .caret {
+        color: var(--muted);
+        display: block;
+        transition: transform 0.15s ease;
+      }
+      .case-head:hover .caret {
+        color: var(--accent);
+      }
+      .case.is-open .caret {
+        transform: rotate(90deg);
+      }
+      .case-title {
+        align-items: center;
+        display: flex;
+        gap: 8px;
+        min-width: 0;
+      }
+      .case-title .row-name {
+        font-size: 14.5px;
+        min-width: 0;
+      }
+      .case-body {
+        display: none;
+        padding: 0 22px 22px;
+      }
+      .case.is-open .case-body {
+        display: block;
+      }
+
+      .case-summary {
+        border-radius: 10px;
+        font-size: 14px;
+        margin: 0 0 12px;
+        padding: 10px 14px;
+      }
+      .case-summary.is-passed {
+        background: var(--pass-soft);
+        color: var(--pass-ink);
+      }
+      .case-summary.is-failed {
+        background: var(--fail-soft);
+        color: var(--fail-ink);
+      }
+      .case-summary.is-skipped {
+        background: var(--skip-soft);
+        color: var(--skip-ink);
+      }
+
+      .case-meta {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        margin: 0 0 14px;
+      }
+      .meta-box {
+        background: var(--subtle);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 9px 13px;
+      }
+      .meta-box dt {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .meta-box dd {
+        font-family: var(--mono);
+        font-size: 13px;
+        margin: 2px 0 0;
+        word-break: break-word;
+      }
+
+      .steps {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .steps-head,
+      .step-row {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 40px minmax(0, 1fr) 104px 84px 76px;
+      }
+      .steps-head {
+        background: var(--subtle);
+        border-bottom: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12.5px;
+        font-weight: 700;
+        padding: 9px 14px;
+      }
+      .step-row {
+        align-items: baseline;
+        border-bottom: 1px solid var(--rule);
+        padding: 10px 14px;
+      }
+      .step-row:hover {
+        background: #fafbfe;
+      }
+      .step-index {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .step-name {
+        font-size: 14px;
+        word-break: break-word;
+      }
+      .step-row.is-step .step-name {
+        font-weight: 600;
+      }
+      .step-row.is-step .keyword {
+        color: var(--accent);
+      }
+      .step-row.is-hook .step-name {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .step-row.is-hook .keyword {
+        font-weight: 600;
+      }
+      .step-origin {
+        color: var(--muted);
+        font-size: 11.5px;
+        font-weight: 500;
+        margin-left: 6px;
+      }
+      .step-time,
+      .step-duration {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .steps > :last-child {
+        border-bottom: 0;
+      }
+
+      .step-detail {
+        background: #fafbfe;
+        border-bottom: 1px solid var(--rule);
+        padding: 4px 14px 14px 66px;
+      }
+      .log-line {
+        display: flex;
+        font-size: 13px;
+        gap: 10px;
+        padding: 3px 0;
+      }
+      .log-level {
+        color: var(--muted);
+        flex: 0 0 56px;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        padding-top: 2px;
+      }
+      .log-text {
+        color: var(--neutral-ink);
+        min-width: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .error-line {
+        color: var(--fail-ink);
+        font-size: 13.5px;
+        font-weight: 600;
+        margin: 6px 0 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .trace {
+        background: #fff6f5;
+        border: 1px solid #f6d5d2;
+        border-radius: 10px;
+        color: #991b1b;
+        font-family: var(--mono);
+        font-size: 11.5px;
+        margin-top: 8px;
+        max-height: 220px;
+        overflow: auto;
+        padding: 10px 13px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      details.trace-wrap {
+        margin-top: 8px;
+      }
+      details.trace-wrap summary {
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 12.5px;
+      }
+
+      .shots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .shot {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: inherit;
+        cursor: zoom-in;
+        font-family: inherit;
+        overflow: hidden;
+        padding: 0;
+        text-align: left;
+        width: 180px;
+      }
+      .shot:hover {
+        border-color: var(--accent);
+      }
+      .shot img {
+        background: var(--neutral-soft);
+        display: block;
+        height: 112px;
+        object-fit: cover;
+        object-position: top;
+        width: 100%;
+      }
+      .shot .caption {
+        color: var(--muted);
+        display: block;
+        font-size: 11.5px;
+        line-height: 1.4;
+        padding: 7px 9px;
+      }
+      .shot .caption b {
+        color: var(--text);
+        display: block;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .gallery {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      }
+      .gallery .shot {
+        width: auto;
+      }
+      .gallery .shot img {
+        height: 168px;
+      }
+
+      .anomaly {
+        border-bottom: 1px solid var(--border);
+        padding: 14px 22px;
+      }
+      .anomaly:last-child {
+        border-bottom: 0;
+      }
+      .anomaly-head {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 10px;
+      }
+      .anomaly-context {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .link {
+        background: none;
+        border: 0;
+        color: var(--accent);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 650;
+        padding: 0;
+        text-align: left;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .anomaly-message {
+        font-size: 14px;
+        margin-top: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .specs {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin: 0;
+      }
+      .spec {
+        background: var(--subtle);
+        border-radius: 10px;
+        padding: 12px 16px;
+      }
+      .spec dt {
+        color: var(--muted);
+        font-size: 12.5px;
+      }
+      .spec dd {
+        font-family: var(--mono);
+        font-size: 14px;
+        margin: 4px 0 0;
+        word-break: break-word;
+      }
+
+      .no-js .tabs,
+      .no-js .toolbar,
+      .no-js .btn,
+      .no-js .lightbox,
+      .no-js .attention-open {
+        display: none !important;
+      }
+      .no-js .print-only {
+        display: block;
+        font-size: 16px;
+        font-weight: 750;
+        margin: 24px 0 10px;
+      }
+      .no-js .panel,
+      .no-js .panel[hidden],
+      .no-js .case-body {
+        display: block !important;
+      }
+
+      .print-only {
+        display: none;
+      }
+      .empty {
+        color: var(--muted);
+        font-size: 14px;
+        padding: 30px 16px;
+        text-align: center;
+      }
+      .empty code {
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      .fatal {
+        border-color: #f4c7c2;
+        padding: 22px 24px;
+      }
+      .fatal h2 {
+        color: var(--fail-ink);
+        font-size: 16px;
+        margin: 0 0 6px;
+      }
+      footer.page-foot {
+        color: var(--muted);
+        font-size: 12.5px;
+        margin-top: 22px;
+        text-align: center;
+      }
+
+      .lightbox {
+        align-items: center;
+        background: rgba(15, 30, 69, 0.94);
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+        inset: 0;
+        justify-content: center;
+        padding: 60px 24px 24px;
+        position: fixed;
+        z-index: 50;
+      }
+      .lightbox.is-open {
+        display: flex;
+      }
+      .lightbox img {
+        border-radius: 10px;
+        max-height: calc(100% - 40px);
+        max-width: 100%;
+        object-fit: contain;
+      }
+      .lightbox-caption {
+        color: #e2e8f0;
+        font-size: 13.5px;
+        text-align: center;
+      }
+      .lightbox-close {
+        position: absolute;
+        right: 16px;
+        top: 10px;
+      }
+      .lightbox-close:focus-visible {
+        outline-color: #ffffff;
+      }
+
+      @media print {
+        @page {
+          margin: 12mm 10mm;
+        }
+        body {
+          background: #fff;
+          font-size: 11px;
+        }
+        .page {
+          max-width: none;
+          padding: 0;
+        }
+        .tabs,
+        .toolbar,
+        .btn,
+        .lightbox,
+        .attention-open {
+          display: none !important;
+        }
+        .print-only {
+          display: block;
+          font-size: 16px;
+          font-weight: 750;
+          margin: 0 0 10px;
+        }
+        .panel,
+        .panel[hidden] {
+          display: block !important;
+          page-break-before: always;
+        }
+        .panel:first-of-type {
+          page-break-before: auto;
+        }
+        .card {
+          box-shadow: none;
+        }
+        .case-body {
+          display: block !important;
+        }
+        .tiles {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .split {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .gallery {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .hero,
+        .legend,
+        .donut-card,
+        .anomaly,
+        .shot,
+        .meta-box,
+        .duration-item,
+        .attention-row,
+        .feature {
+          page-break-inside: avoid;
+        }
+        .case-head {
+          page-break-after: avoid;
+        }
+        .trace {
+          font-size: 9px;
+          max-height: none;
+          overflow: visible;
+        }
+        .gallery {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .gallery .shot img {
+          height: auto;
+          object-fit: contain;
+        }
+        .steps-head,
+        .step-row {
+          gap: 8px;
+          grid-template-columns: 30px minmax(0, 1fr) 66px 56px 52px;
+        }
+        .step-row {
+          page-break-inside: avoid;
+          padding: 6px 10px;
+        }
+        .step-detail {
+          padding: 2px 10px 8px 48px;
+        }
+        .duration-list {
+          max-height: none;
+          overflow: visible;
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .tiles {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .split {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .specs {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        body {
+          font-size: 14px;
+        }
+        .link {
+          align-items: center;
+          display: inline-flex;
+          min-height: 44px;
+        }
+        details.trace-wrap summary {
+          padding: 13px 0;
+        }
+        .page {
+          padding: 16px 16px 40px;
+        }
+        .hero-top {
+          padding: 16px;
+        }
+        .wordmark {
+          border-right: 0;
+          padding-right: 0;
+        }
+        .hero-actions {
+          width: 100%;
+        }
+        .hero-actions .btn {
+          flex: 1 1 auto;
+        }
+        .hero-body {
+          gap: 18px;
+          grid-template-columns: minmax(0, 1fr);
+          justify-items: start;
+          padding: 20px 16px;
+        }
+        .hero-ring {
+          height: 132px;
+          width: 132px;
+        }
+        .verdict-headline {
+          font-size: 24px;
+        }
+        .tiles {
+          gap: 10px;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          width: 100%;
+        }
+        .tile-value {
+          font-size: 24px;
+        }
+
+        .legend {
+          padding: 14px 16px;
+        }
+        .tabs {
+          flex-wrap: nowrap;
+          overflow-x: auto;
+        }
+        .tab,
+        .btn,
+        .field {
+          min-height: 44px;
+        }
+        .donuts,
+        .specs {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .section-head,
+        .section-body {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .attention-row {
+          grid-template-columns: minmax(0, 1fr) auto;
+          padding: 14px 16px;
+        }
+        .attention-row .code-chip {
+          justify-self: start;
+        }
+        .attention-row .attention-body {
+          grid-column: 1 / -1;
+          grid-row: 2;
+        }
+        .attention-error {
+          white-space: normal;
+        }
+
+        .case-row,
+        .case-head {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px 10px;
+        }
+        .case-head {
+          padding: 14px 16px;
+        }
+        .case-row .row-name,
+        .case-head .case-title {
+          flex: 1 1 100%;
+          order: 5;
+        }
+        .row-name {
+          white-space: normal;
+        }
+        .row-steps {
+          order: 6;
+        }
+        .case-row .time-chip,
+        .case-head .time-chip {
+          margin-left: auto;
+          order: 7;
+        }
+
+        .toolbar {
+          width: 100%;
+        }
+        .toolbar .field,
+        .toolbar .btn {
+          flex: 1 1 140px;
+        }
+        input.field {
+          flex-basis: 100%;
+          min-width: 0;
+          width: 100%;
+        }
+
+        .case-body {
+          padding: 0 16px 16px;
+        }
+        .case-meta {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .case-meta .meta-box:first-child {
+          grid-column: 1 / -1;
+        }
+        .steps-head,
+        .step-row {
+          gap: 6px 8px;
+          grid-template-columns: 26px minmax(0, 1fr) auto;
+        }
+        .steps-head > :nth-child(n + 3),
+        .step-row .step-time {
+          display: none;
+        }
+        .step-row .step-name {
+          grid-column: 2 / -1;
+        }
+        .step-row > :nth-child(3) {
+          grid-column: 2;
+        }
+        .step-row .step-duration {
+          justify-self: end;
+        }
+        .step-detail {
+          padding: 4px 12px 12px;
+        }
+        .log-line {
+          flex-direction: column;
+          gap: 0;
+        }
+        .log-level {
+          flex-basis: auto;
+        }
+
+        .duration-item {
+          gap: 4px 12px;
+          grid-template-columns: minmax(0, 1fr) auto;
+        }
+        .duration-item .meter {
+          grid-column: 1 / -1;
+          grid-row: 2;
+        }
+        .gallery {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .shot {
+          width: calc(50% - 5px);
+        }
+        .gallery .shot {
+          width: auto;
+        }
+        .anomaly {
+          padding: 14px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div class="hero-top">
+          <div class="wordmark">
+            <div class="w1">demoqa</div>
+            <div class="w2">Automation</div>
+          </div>
+          <div class="hero-title">
+            <h1>Test Execution Report</h1>
+            <div class="hero-sub">
+              Application <strong id="app-name">-</strong> &middot; Features
+              <strong id="feature-names">-</strong>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <span class="stamp">Generated <b id="generated-at">-</b></span>
+            <button class="btn btn-light" type="button" id="export-pdf">
+              Export PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-body">
+          <div id="hero-ring"></div>
+          <div id="verdict"></div>
+          <div class="tiles" id="tiles"></div>
+        </div>
+      </header>
+
+      <section class="card legend" aria-label="What the statuses mean">
+        <span class="legend-title">How to read this report</span>
+        <span class="legend-item"
+          ><span class="pill pill-passed">PASSED</span>
+          <span><b>Worked as expected</b></span></span
+        >
+        <span class="legend-item"
+          ><span class="pill pill-failed">FAILED</span>
+          <span><b>Did not work as expected</b>, see the error</span></span
+        >
+        <span class="legend-item"
+          ><span class="pill pill-skipped">SKIPPED</span>
+          <span><b>Not run this time</b>, e.g. test data missing</span></span
+        >
+      </section>
+
+      <nav class="card tabs" role="tablist" aria-label="Report sections">
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          id="tab-overview"
+          aria-controls="panel-overview"
+          data-panel="overview"
+        >
+          Overview
+        </button>
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          id="tab-cases"
+          aria-controls="panel-cases"
+          data-panel="cases"
+        >
+          Scenarios &amp; Steps <span class="count" id="count-cases">0</span>
+        </button>
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          id="tab-gallery"
+          aria-controls="panel-gallery"
+          data-panel="gallery"
+        >
+          Screenshots <span class="count" id="count-shots">0</span>
+        </button>
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          id="tab-logs"
+          aria-controls="panel-logs"
+          data-panel="logs"
+        >
+          Errors &amp; Warnings <span class="count" id="count-logs">0</span>
+        </button>
+
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          id="tab-environment"
+          aria-controls="panel-environment"
+          data-panel="environment"
+        >
+          Environment
+        </button>
+      </nav>
+
+      <section
+        class="panel"
+        id="panel-overview"
+        role="tabpanel"
+        aria-labelledby="tab-overview"
+      >
+        <h2 class="print-only">Overview</h2>
+
+        <div class="card attention stack" id="attention" hidden>
+          <div class="section-head">
+            <h2>Needs attention</h2>
+            <span class="hint"
+              >Failed scenarios. Select one to see what went wrong.</span
+            >
+          </div>
+          <div id="attention-list"></div>
+        </div>
+        <div class="card all-clear stack" id="all-clear" hidden></div>
+
+        <div class="split">
+          <div class="card">
+            <div class="section-head">
+              <h2>Results by feature</h2>
+              <span class="hint" id="breakdown-hint">0 scenarios</span>
+            </div>
+            <div class="section-body" id="breakdown"></div>
+          </div>
+
+          <div class="card is-sticky">
+            <div class="section-head">
+              <h2>Pass rate</h2>
+              <span class="hint">Share of everything run that passed</span>
+            </div>
+            <div class="section-body">
+              <div class="donuts" id="donuts"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <h2>Time taken per scenario</h2>
+            <span class="hint">Longest first</span>
+          </div>
+          <div class="section-body" id="durations"></div>
+        </div>
+      </section>
+
+      <section
+        class="panel"
+        id="panel-cases"
+        role="tabpanel"
+        aria-labelledby="tab-cases"
+        hidden
+      >
+        <h2 class="print-only">Scenarios &amp; Steps</h2>
+        <div class="card">
+          <div class="section-head">
+            <h2>Scenarios &amp; Steps</h2>
+            <div class="toolbar">
+              <input
+                class="field"
+                type="search"
+                id="case-search"
+                placeholder="Search scenario, tag, or step"
+                aria-label="Search scenarios"
+              />
+              <select
+                class="field"
+                id="feature-filter"
+                aria-label="Filter by feature"
+                hidden
+              ></select>
+              <select
+                class="field"
+                id="case-filter"
+                aria-label="Filter by status"
+              >
+                <option value="ALL">All statuses</option>
+                <option value="PASSED">Passed</option>
+                <option value="FAILED">Failed</option>
+                <option value="SKIPPED">Skipped</option>
+              </select>
+              <button class="btn btn-ghost" type="button" id="expand-all">
+                Expand all
+              </button>
+              <button class="btn btn-ghost" type="button" id="collapse-all">
+                Collapse all
+              </button>
+            </div>
+          </div>
+          <div id="cases"></div>
+          <div class="empty" id="cases-filtered" hidden>
+            No scenario matches this search and filter. Clear the search or pick
+            another status.
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="panel"
+        id="panel-gallery"
+        role="tabpanel"
+        aria-labelledby="tab-gallery"
+        hidden
+      >
+        <h2 class="print-only">Screenshots</h2>
+        <div class="card">
+          <div class="section-head">
+            <h2>Screenshots</h2>
+            <span class="hint" id="gallery-hint">0 screenshots</span>
+          </div>
+          <div class="section-body">
+            <div class="gallery" id="gallery"></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="panel"
+        id="panel-logs"
+        role="tabpanel"
+        aria-labelledby="tab-logs"
+        hidden
+      >
+        <h2 class="print-only">Errors &amp; Warnings</h2>
+        <div class="card">
+          <div class="section-head">
+            <h2>Errors &amp; Warnings</h2>
+            <div class="toolbar">
+              <select
+                class="field"
+                id="log-filter"
+                aria-label="Filter by level"
+              >
+                <option value="ERRORS">Errors &amp; failures</option>
+                <option value="WARNING">Warnings</option>
+                <option value="ALL">All levels</option>
+              </select>
+            </div>
+          </div>
+          <div id="anomalies"></div>
+          <div class="empty" id="anomalies-filtered" hidden></div>
+        </div>
+      </section>
+
+      <section
+        class="panel"
+        id="panel-environment"
+        role="tabpanel"
+        aria-labelledby="tab-environment"
+        hidden
+      >
+        <h2 class="print-only">Environment</h2>
+        <div class="card stack">
+          <div class="section-head"><h2>Browser &amp; target</h2></div>
+          <div class="section-body">
+            <dl class="specs" id="target-specs"></dl>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h2>Tooling</h2></div>
+          <div class="section-body">
+            <dl class="specs" id="machine-specs"></dl>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-foot">Test automation by yedijaezra</footer>
+    </div>
+
+    <div
+      class="lightbox"
+      id="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Screenshot preview"
+    >
+      <button
+        class="btn btn-light lightbox-close"
+        type="button"
+        id="lightbox-close"
+      >
+        Close (Esc)
+      </button>
+      <img id="lightbox-image" src="" alt="" />
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <script id="execution-data" type="application/json">
+      __EXECUTION_DATA__
+    </script>
+    <script>
+      (function () {
+        'use strict';
+
+        var PASSED = ['PASSED'];
+        var FAILED = ['FAILED', 'AMBIGUOUS', 'UNDEFINED', 'ERROR'];
+        var SKIPPED = ['SKIPPED', 'PENDING', 'UNKNOWN', 'WARNING'];
+        var COLORS = {
+          passed: 'var(--pass)',
+          failed: 'var(--fail)',
+          skipped: 'var(--skip)',
+        };
+        var DATA;
+
+        function el(id) {
+          return document.getElementById(id);
+        }
+        function each(nodes, fn) {
+          Array.prototype.forEach.call(nodes, fn);
+        }
+
+        function chevron(size, className) {
+          return (
+            '<svg class="' +
+            (className || '') +
+            '" width="' +
+            size +
+            '" height="' +
+            size +
+            '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"' +
+            ' stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"></polyline></svg>'
+          );
+        }
+
+        function escapeHtml(value) {
+          return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function statusGroup(status) {
+          if (PASSED.indexOf(status) >= 0) {
+            return 'passed';
+          }
+          if (FAILED.indexOf(status) >= 0) {
+            return 'failed';
+          }
+          if (SKIPPED.indexOf(status) >= 0) {
+            return 'skipped';
+          }
+          return 'neutral';
+        }
+
+        function pill(status) {
+          return (
+            '<span class="pill pill-' +
+            statusGroup(status) +
+            '">' +
+            escapeHtml(status || '-') +
+            '</span>'
+          );
+        }
+
+        function plural(count, word) {
+          return count + ' ' + word + (count === 1 ? '' : 's');
+        }
+        function pad(value) {
+          return value < 10 ? '0' + value : String(value);
+        }
+
+        function clock(millis) {
+          if (!millis) {
+            return '-';
+          }
+          var date = new Date(millis);
+          return (
+            pad(date.getHours()) +
+            ':' +
+            pad(date.getMinutes()) +
+            ':' +
+            pad(date.getSeconds())
+          );
+        }
+
+        function stamp(millis) {
+          if (!millis) {
+            return '-';
+          }
+          var date = new Date(millis);
+          return (
+            date.getFullYear() +
+            '-' +
+            pad(date.getMonth() + 1) +
+            '-' +
+            pad(date.getDate()) +
+            ' ' +
+            clock(millis)
+          );
+        }
+
+        function duration(millis) {
+          if (millis == null) {
+            return '-';
+          }
+          var seconds = millis / 1000;
+          if (seconds < 10) {
+            return seconds.toFixed(2) + 's';
+          }
+          if (seconds < 60) {
+            return seconds.toFixed(1) + 's';
+          }
+          var minutes = Math.floor(seconds / 60);
+          if (minutes < 60) {
+            return minutes + 'm ' + Math.round(seconds - minutes * 60) + 's';
+          }
+          var hours = Math.floor(minutes / 60);
+          return hours + 'h ' + (minutes - hours * 60) + 'm';
+        }
+
+        function percent(part, total) {
+          return total ? Math.round((part / total) * 100) : 0;
+        }
+
+        function cases() {
+          return DATA.testCases || [];
+        }
+        function features() {
+          return DATA.features || [];
+        }
+        function shotSrc(id) {
+          return (DATA.assets || {})[id] || '';
+        }
+
+        function counts(list) {
+          var result = { passed: 0, failed: 0, skipped: 0 };
+          list.forEach(function (item) {
+            var group = statusGroup(item.status);
+            if (result[group] != null) {
+              result[group] += 1;
+            }
+          });
+          return result;
+        }
+
+        function meter(parts, label) {
+          var total = parts.reduce(function (sum, part) {
+            return sum + part[1];
+          }, 0);
+          return (
+            '<div class="meter" role="img" aria-label="' +
+            escapeHtml(label) +
+            '">' +
+            parts
+              .filter(function (part) {
+                return part[1];
+              })
+              .map(function (part) {
+                return (
+                  '<span style="width:' +
+                  (part[1] / total) * 100 +
+                  '%;background:' +
+                  part[2] +
+                  '"></span>'
+                );
+              })
+              .join('') +
+            '</div>'
+          );
+        }
+
+        function ring(passed, failed, skipped, size, onNavy, label) {
+          var total = passed + failed + skipped;
+          var radius = size / 2 - 12;
+          var circumference = 2 * Math.PI * radius;
+          var center = size / 2;
+          var offset = 0;
+          var arcs = [
+            [passed, onNavy ? 'var(--pass-light)' : 'var(--pass)'],
+            [failed, onNavy ? 'var(--fail-light)' : 'var(--fail)'],
+            [skipped, onNavy ? 'var(--skip-light)' : 'var(--skip)'],
+          ]
+            .filter(function (arc) {
+              return arc[0];
+            })
+            .map(function (arc) {
+              var length = (arc[0] / total) * circumference;
+              var visible = Math.max(0, length - (arc[0] === total ? 0 : 3));
+              var svg =
+                '<circle cx="' +
+                center +
+                '" cy="' +
+                center +
+                '" r="' +
+                radius +
+                '" fill="none" stroke="' +
+                arc[1] +
+                '" stroke-width="14" stroke-dasharray="' +
+                visible.toFixed(2) +
+                ' ' +
+                circumference.toFixed(2) +
+                '" stroke-dashoffset="' +
+                (-offset).toFixed(2) +
+                '" transform="rotate(-90 ' +
+                center +
+                ' ' +
+                center +
+                ')"></circle>';
+              offset += length;
+              return svg;
+            })
+            .join('');
+
+          var value = total ? percent(passed, total) + '%' : 'n/a';
+          var text = onNavy ? '#ffffff' : '#0f172a';
+          var sub = onNavy ? '#b4c0e0' : '#586377';
+
+          return (
+            '<svg class="' +
+            (onNavy ? 'hero-ring' : 'donut') +
+            '" width="' +
+            size +
+            '" height="' +
+            size +
+            '" viewBox="0 0 ' +
+            size +
+            ' ' +
+            size +
+            '" role="img" aria-label="' +
+            escapeHtml(label + ': ' + value + ' passed') +
+            '">' +
+            '<circle cx="' +
+            center +
+            '" cy="' +
+            center +
+            '" r="' +
+            radius +
+            '" fill="none" stroke="' +
+            (onNavy ? 'var(--navy-line)' : 'var(--track)') +
+            '" stroke-width="14"></circle>' +
+            arcs +
+            '<text x="' +
+            center +
+            '" y="' +
+            (center + 4) +
+            '" text-anchor="middle" font-size="' +
+            Math.round(size / 5) +
+            '" font-weight="800" fill="' +
+            text +
+            '">' +
+            value +
+            '</text>' +
+            '<text x="' +
+            center +
+            '" y="' +
+            (center + size / 6.5) +
+            '" text-anchor="middle" font-size="12" font-weight="600" fill="' +
+            sub +
+            '">passed</text></svg>'
+          );
+        }
+
+        function renderHero() {
+          var s = DATA.summary || {};
+          var run = DATA.run || {};
+          var total = s.totalTestCases || 0;
+          var passed = s.passedTestCases || 0;
+          var failed = s.failedTestCases || 0;
+          var skipped = s.skippedTestCases || 0;
+
+          el('app-name').textContent = DATA.application || '-';
+
+          var names = features();
+          el('feature-names').textContent = names.length
+            ? names.length > 3
+              ? names.slice(0, 3).join(', ') +
+                ' +' +
+                (names.length - 3) +
+                ' more'
+              : names.join(', ')
+            : '-';
+          el('feature-names').title = names.join(', ');
+          el('generated-at').textContent = stamp(DATA.generatedAt);
+          document.title =
+            (DATA.title || 'Automation') + ' - Test Execution Report';
+
+          function mark(group, text) {
+            return (
+              '<span class="is-' + group + '">' + escapeHtml(text) + '</span>'
+            );
+          }
+
+          var headline;
+          if (!total) {
+            headline = mark('skipped', 'No scenarios ran');
+          } else if (failed) {
+            headline =
+              mark('failed', plural(failed, 'scenario') + ' failed') +
+              ' out of ' +
+              total;
+          } else if (passed === total) {
+            headline = mark(
+              'passed',
+              total === 1
+                ? 'The only scenario passed'
+                : 'All ' + total + ' scenarios passed',
+            );
+          } else {
+            headline =
+              mark('passed', passed + ' of ' + total + ' passed') +
+              ', ' +
+              mark('skipped', 'the rest were skipped');
+          }
+
+          var detail = total
+            ? '<strong>' +
+              passed +
+              ' passed</strong>, <strong>' +
+              failed +
+              ' failed</strong>, <strong>' +
+              skipped +
+              ' skipped</strong>. Run started ' +
+              escapeHtml(stamp(run.startTime)) +
+              ' and took ' +
+              escapeHtml(duration(run.durationMs)) +
+              '.'
+            : 'Check the tag filter (' +
+              escapeHtml(run.tags || 'none') +
+              ') and run the tests again.';
+
+          var firstFailure = cases().filter(function (item) {
+            return statusGroup(item.status) === 'failed';
+          })[0];
+          var attention = firstFailure
+            ? '<p class="verdict-attention"><b>Needs attention:</b> ' +
+              escapeHtml(firstFailure.code + ' ' + firstFailure.name) +
+              (failed > 1
+                ? ' and ' + plural(failed - 1, 'other scenario')
+                : '') +
+              '. Details below.</p>'
+            : '';
+
+          el('hero-ring').innerHTML = ring(
+            passed,
+            failed,
+            skipped,
+            156,
+            true,
+            'Scenarios',
+          );
+          el('verdict').innerHTML =
+            '<p class="verdict-headline">' +
+            headline +
+            '</p>' +
+            '<p class="verdict-detail">' +
+            detail +
+            '</p>' +
+            attention;
+
+          var tiles = [
+            ['is-quiet', total, 'Scenarios run'],
+            [passed ? 'is-passed' : 'is-quiet', passed, 'Passed'],
+            [failed ? 'is-failed' : 'is-quiet', failed, 'Failed'],
+            [skipped ? 'is-skipped' : 'is-quiet', skipped, 'Skipped'],
+            ['is-quiet', s.totalSteps || 0, 'Steps checked'],
+            ['is-quiet', duration(s.durationMs), 'Total time'],
+          ];
+          el('tiles').innerHTML = tiles
+            .map(function (tile) {
+              return (
+                '<div class="tile ' +
+                tile[0] +
+                '"><div class="tile-value">' +
+                escapeHtml(tile[1]) +
+                '</div><div class="tile-label">' +
+                escapeHtml(tile[2]) +
+                '</div></div>'
+              );
+            })
+            .join('');
+        }
+
+        function renderAttention() {
+          var failed = cases()
+            .map(function (item, index) {
+              return { item: item, index: index };
+            })
+            .filter(function (entry) {
+              return statusGroup(entry.item.status) === 'failed';
+            });
+
+          if (!failed.length) {
+            if (cases().length) {
+              var skipped = (DATA.summary || {}).skippedTestCases || 0;
+              el('all-clear').hidden = false;
+              el('all-clear').innerHTML =
+                '<span><b>Nothing failed in this run.</b> ' +
+                (skipped
+                  ? plural(skipped, 'scenario') +
+                    ' skipped, see the Scenarios tab.'
+                  : 'Every scenario passed.') +
+                '</span>';
+            }
+            return;
+          }
+
+          el('attention').hidden = false;
+          el('attention-list').innerHTML = failed
+            .map(function (entry) {
+              var item = entry.item;
+              return (
+                '<button class="attention-row" type="button" data-case="' +
+                entry.index +
+                '">' +
+                '<span class="code-chip">' +
+                escapeHtml(item.code) +
+                '</span>' +
+                '<span class="attention-body"><span class="attention-name">' +
+                escapeHtml(item.name) +
+                '</span>' +
+                (item.failedStep
+                  ? '<span class="attention-step">Stopped at: ' +
+                    escapeHtml(item.failedStep) +
+                    '</span>'
+                  : '') +
+                '<span class="attention-error">' +
+                escapeHtml(item.message || 'Failed without a message') +
+                '</span></span>' +
+                '<span class="attention-open">View details</span>' +
+                '</button>'
+              );
+            })
+            .join('');
+        }
+
+        function caseRow(item, index) {
+          return (
+            '<button class="case-row" type="button" data-case="' +
+            index +
+            '">' +
+            pill(item.status) +
+            '<span class="code-chip">' +
+            escapeHtml(item.code) +
+            '</span>' +
+            '<span class="row-name" title="' +
+            escapeHtml(item.name) +
+            '">' +
+            escapeHtml(item.name) +
+            '</span>' +
+            '<span class="time-chip">' +
+            escapeHtml(duration(item.durationMs)) +
+            '</span>' +
+            '</button>'
+          );
+        }
+
+        function renderBreakdown() {
+          var list = cases();
+          var names = features();
+          el('breakdown-hint').textContent =
+            plural(list.length, 'scenario') +
+            (names.length > 1 ? ' in ' + plural(names.length, 'feature') : '');
+
+          if (!list.length) {
+            el('breakdown').innerHTML =
+              '<div class="empty">No scenarios ran. Check the <code>TAGS</code> filter, then run <code>npm run test:report</code> again.</div>';
+            return;
+          }
+
+          el('breakdown').innerHTML = names
+            .map(function (feature) {
+              var owned = [];
+              var rows = '';
+              list.forEach(function (item, index) {
+                if (item.feature === feature) {
+                  owned.push(item);
+                  rows += caseRow(item, index);
+                }
+              });
+              var c = counts(owned);
+
+              return (
+                '<div class="feature"><div class="feature-head"><span class="feature-name">' +
+                escapeHtml(feature) +
+                '</span>' +
+                '<span class="feature-tally"><b>' +
+                c.passed +
+                '</b> of ' +
+                owned.length +
+                ' passed</span></div>' +
+                meter(
+                  [
+                    ['Passed', c.passed, COLORS.passed],
+                    ['Failed', c.failed, COLORS.failed],
+                    ['Skipped', c.skipped, COLORS.skipped],
+                  ],
+                  c.passed +
+                    ' passed, ' +
+                    c.failed +
+                    ' failed, ' +
+                    c.skipped +
+                    ' skipped',
+                ) +
+                rows +
+                '</div>'
+              );
+            })
+            .join('');
+        }
+
+        function donutCard(title, passed, failed, skipped) {
+          return (
+            '<div class="donut-card"><h3 class="donut-title">' +
+            escapeHtml(title) +
+            '</h3>' +
+            ring(passed, failed, skipped, 150, false, title) +
+            '<div class="keys">' +
+            '<span class="key"><i style="background:var(--pass)"></i><b>' +
+            passed +
+            '</b> passed</span>' +
+            '<span class="key"><i style="background:var(--fail)"></i><b>' +
+            failed +
+            '</b> failed</span>' +
+            '<span class="key"><i style="background:var(--skip)"></i><b>' +
+            skipped +
+            '</b> skipped</span>' +
+            '</div></div>'
+          );
+        }
+
+        function renderDonuts() {
+          var s = DATA.summary || {};
+          el('donuts').innerHTML =
+            donutCard(
+              'Scenarios',
+              s.passedTestCases || 0,
+              s.failedTestCases || 0,
+              s.skippedTestCases || 0,
+            ) +
+            donutCard(
+              'Steps',
+              s.passedSteps || 0,
+              s.failedSteps || 0,
+              s.skippedSteps || 0,
+            );
+        }
+
+        function renderDurations() {
+          var list = cases()
+            .slice()
+            .sort(function (a, b) {
+              return b.durationMs - a.durationMs;
+            });
+          if (!list.length) {
+            el('durations').innerHTML =
+              '<div class="empty">No timings to show because no scenarios ran.</div>';
+            return;
+          }
+          var longest = list[0].durationMs || 1;
+
+          el('durations').innerHTML =
+            '<div class="duration-list">' +
+            list
+              .map(function (item) {
+                var group = statusGroup(item.status);
+                var width = Math.max(2, (item.durationMs / longest) * 100);
+                return (
+                  '<div class="duration-item">' +
+                  '<span class="label" title="' +
+                  escapeHtml(item.name) +
+                  '"><b>' +
+                  escapeHtml(item.code) +
+                  '</b> ' +
+                  escapeHtml(item.name) +
+                  '</span>' +
+                  '<div class="meter"><span style="width:' +
+                  width +
+                  '%;background:' +
+                  (COLORS[group] || 'var(--muted)') +
+                  '"></span></div>' +
+                  '<span class="value">' +
+                  escapeHtml(duration(item.durationMs)) +
+                  '</span>' +
+                  '</div>'
+                );
+              })
+              .join('') +
+            '</div>' +
+            '<div class="keys is-left">' +
+            '<span class="key"><i style="background:var(--pass)"></i>passed</span>' +
+            '<span class="key"><i style="background:var(--fail)"></i>failed</span>' +
+            '<span class="key"><i style="background:var(--skip)"></i>skipped</span></div>';
+        }
+
+        function stepName(step) {
+          if (step.kind === 'HOOK') {
+            return (
+              '<span class="keyword">' +
+              escapeHtml(step.keyword) +
+              ' hook</span> ' +
+              escapeHtml(step.name)
+            );
+          }
+          return (
+            '<span class="keyword">' +
+            escapeHtml(step.keyword) +
+            '</span> ' +
+            escapeHtml(step.name) +
+            (step.background
+              ? '<span class="step-origin">Background</span>'
+              : '')
+          );
+        }
+
+        function shotButton(shot, caption, detail) {
+          return (
+            '<button class="shot" type="button" data-shot="' +
+            escapeHtml(shot.id) +
+            '" data-caption="' +
+            escapeHtml(caption) +
+            '"><img src="' +
+            escapeHtml(shotSrc(shot.id)) +
+            '" alt="' +
+            escapeHtml(caption) +
+            '">' +
+            '<span class="caption"><b>' +
+            escapeHtml(shot.name) +
+            '</b>' +
+            escapeHtml(detail) +
+            '</span></button>'
+          );
+        }
+
+        function renderStepDetail(step) {
+          var html = (step.logs || [])
+            .map(function (entry) {
+              return (
+                '<div class="log-line"><span class="log-level">' +
+                escapeHtml(entry.level) +
+                '</span><span class="log-text">' +
+                escapeHtml(entry.message) +
+                '</span></div>'
+              );
+            })
+            .join('');
+
+          if (step.message) {
+            html +=
+              '<p class="error-line">' + escapeHtml(step.message) + '</p>';
+          }
+          if (step.stackTrace) {
+            html +=
+              '<details class="trace-wrap"><summary>Technical details (stack trace)</summary><div class="trace">' +
+              escapeHtml(step.stackTrace) +
+              '</div></details>';
+          }
+          if ((step.screenshots || []).length) {
+            html +=
+              '<div class="shots">' +
+              step.screenshots
+                .map(function (shot) {
+                  return shotButton(shot, shot.name, clock(shot.time));
+                })
+                .join('') +
+              '</div>';
+          }
+          return html;
+        }
+
+        function renderStep(step) {
+          var detail = renderStepDetail(step);
+          return (
+            '<div class="step-row ' +
+            (step.kind === 'HOOK' ? 'is-hook' : 'is-step') +
+            '">' +
+            '<span class="step-index">' +
+            escapeHtml(step.index) +
+            '</span>' +
+            '<span class="step-name">' +
+            stepName(step) +
+            '</span>' +
+            '<span>' +
+            pill(step.status) +
+            '</span>' +
+            '<span class="step-time">' +
+            escapeHtml(clock(step.startTime)) +
+            '</span>' +
+            '<span class="step-duration">' +
+            escapeHtml(duration(step.durationMs)) +
+            '</span>' +
+            '</div>' +
+            (detail ? '<div class="step-detail">' + detail + '</div>' : '')
+          );
+        }
+
+        function caseSummary(item) {
+          var group = statusGroup(item.status);
+          if (group === 'passed') {
+            return item.stepCount === 1
+              ? 'The step worked as expected.'
+              : 'All ' + item.stepCount + ' steps worked as expected.';
+          }
+          if (group === 'failed') {
+            return (
+              'Stopped at “' +
+              (item.failedStep || 'an unknown step') +
+              '”: ' +
+              (item.message || 'no error message')
+            );
+          }
+          var skippedAt = item.steps.filter(function (step) {
+            return statusGroup(step.status) === 'skipped';
+          })[0];
+          if (!skippedAt) {
+            return 'Not run this time.';
+          }
+
+          var reason = (skippedAt.logs || [])
+            .map(function (entry) {
+              return entry.message;
+            })
+            .join(' ');
+          var origin =
+            skippedAt.kind === 'HOOK'
+              ? 'skipped by the ' +
+                skippedAt.keyword +
+                ' hook “' +
+                skippedAt.name +
+                '”'
+              : 'skipped from “' +
+                skippedAt.keyword +
+                ' ' +
+                skippedAt.name +
+                '”';
+          return (
+            'Not run this time, ' + origin + (reason ? ': ' + reason : '.')
+          );
+        }
+
+        function renderCases() {
+          var list = cases();
+          el('count-cases').textContent = list.length;
+
+          if (!list.length) {
+            el('cases').innerHTML =
+              '<div class="empty">No scenarios ran. Check the <code>TAGS</code> filter, then run <code>npm run test:report</code> again.</div>';
+            return;
+          }
+
+          var many = features().length > 1;
+
+          el('cases').innerHTML = list
+            .map(function (item, index) {
+              var group = statusGroup(item.status);
+              var meta = [
+                ['Location', item.location],
+                ['Tags', item.tags.join(' ') || '-'],
+                ['Started', stamp(item.startTime)],
+                ['Duration', duration(item.durationMs)],
+              ];
+              if (item.attempts > 1) {
+                meta.push(['Attempts', item.attempts]);
+              }
+
+              var body =
+                '<p class="case-summary is-' +
+                group +
+                '">' +
+                escapeHtml(caseSummary(item)) +
+                '</p>' +
+                '<dl class="case-meta">' +
+                meta
+                  .map(function (row) {
+                    return (
+                      '<div class="meta-box"><dt>' +
+                      escapeHtml(row[0]) +
+                      '</dt><dd>' +
+                      escapeHtml(row[1]).replace(/\//g, '/<wbr>') +
+                      '</dd></div>'
+                    );
+                  })
+                  .join('') +
+                '</dl>';
+
+              body +=
+                '<div class="steps">' +
+                '<div class="steps-head"><span>#</span><span>Step</span><span>Status</span><span>Started</span><span>Duration</span></div>' +
+                ((item.steps || []).length
+                  ? item.steps.map(renderStep).join('')
+                  : '<div class="empty">No steps were recorded for this scenario.</div>') +
+                '</div>';
+
+              var search = [
+                item.code,
+                item.name,
+                item.feature,
+                item.location,
+                item.tags.join(' '),
+              ]
+                .concat(
+                  item.steps.map(function (step) {
+                    return step.keyword + ' ' + step.name;
+                  }),
+                )
+                .join(' ')
+                .toLowerCase();
+
+              return (
+                '<article class="case" data-index="' +
+                index +
+                '" data-status="' +
+                group.toUpperCase() +
+                '" data-feature="' +
+                escapeHtml(item.feature) +
+                '" data-search="' +
+                escapeHtml(search) +
+                '">' +
+                '<button class="case-head" type="button" aria-expanded="false" aria-controls="case-body-' +
+                index +
+                '">' +
+                chevron(15, 'caret') +
+                pill(item.status) +
+                '<span class="code-chip">' +
+                escapeHtml(item.code) +
+                '</span>' +
+                '<span class="case-title"><span class="row-name" title="' +
+                escapeHtml(item.name) +
+                '">' +
+                escapeHtml(item.name) +
+                '</span>' +
+                (many
+                  ? '<span class="feature-chip">' +
+                    escapeHtml(item.feature) +
+                    '</span>'
+                  : '') +
+                '</span>' +
+                '<span class="row-steps"><b>' +
+                item.stepCount +
+                '</b> ' +
+                (item.stepCount === 1 ? 'step' : 'steps') +
+                '</span>' +
+                '<span class="time-chip">' +
+                escapeHtml(duration(item.durationMs)) +
+                '</span>' +
+                '</button>' +
+                '<div class="case-body" id="case-body-' +
+                index +
+                '">' +
+                body +
+                '</div>' +
+                '</article>'
+              );
+            })
+            .join('');
+        }
+
+        function bindCaseHeads() {
+          each(el('cases').querySelectorAll('.case-head'), function (head) {
+            head.addEventListener('click', function () {
+              setOpen(
+                head.parentNode,
+                !head.parentNode.classList.contains('is-open'),
+              );
+            });
+          });
+        }
+
+        function setOpen(node, open) {
+          node.classList.toggle('is-open', open);
+          node
+            .querySelector('.case-head')
+            .setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        function renderFeatureFilter() {
+          var names = features();
+          var field = el('feature-filter');
+          if (names.length < 2) {
+            return;
+          }
+
+          field.innerHTML =
+            '<option value="ALL">All features</option>' +
+            names
+              .map(function (name) {
+                return (
+                  '<option value="' +
+                  escapeHtml(name) +
+                  '">' +
+                  escapeHtml(name) +
+                  '</option>'
+                );
+              })
+              .join('');
+          field.hidden = false;
+        }
+
+        function filterCases() {
+          var term = el('case-search').value.trim().toLowerCase();
+          var status = el('case-filter').value;
+          var feature = el('feature-filter').hidden
+            ? 'ALL'
+            : el('feature-filter').value;
+          var shown = 0;
+          var nodes = el('cases').querySelectorAll('.case');
+
+          each(nodes, function (node) {
+            var visible =
+              (!term || node.getAttribute('data-search').indexOf(term) >= 0) &&
+              (status === 'ALL' ||
+                node.getAttribute('data-status') === status) &&
+              (feature === 'ALL' ||
+                node.getAttribute('data-feature') === feature);
+            node.hidden = !visible;
+            if (visible) {
+              shown += 1;
+            }
+          });
+          el('cases-filtered').hidden = !nodes.length || shown > 0;
+        }
+
+        function openCase(index) {
+          if (index < 0) {
+            return;
+          }
+          activateTab('cases');
+          var node = el('cases').querySelector(
+            '.case[data-index="' + index + '"]',
+          );
+          if (!node) {
+            return;
+          }
+          if (node.hidden) {
+            el('case-search').value = '';
+            el('case-filter').value = 'ALL';
+            el('feature-filter').value = 'ALL';
+            filterCases();
+          }
+          setOpen(node, true);
+          node.scrollIntoView({ block: 'start' });
+          node.querySelector('.case-head').focus({ preventScroll: true });
+        }
+
+        function renderGallery() {
+          var shots = DATA.screenshots || [];
+          el('count-shots').textContent = shots.length;
+          el('gallery-hint').textContent =
+            plural(shots.length, 'screenshot') + ', select one to enlarge';
+
+          if (!shots.length) {
+            el('gallery').innerHTML =
+              '<div class="empty">No screenshots in this run. Steps attach them with <code>world.screenshot()</code>.</div>';
+            return;
+          }
+
+          el('gallery').innerHTML = shots
+            .map(function (shot) {
+              return shotButton(
+                shot,
+                shot.code + ' · ' + shot.testCase + ' · ' + shot.name,
+                shot.code + ' · ' + shot.testCase + ' · ' + clock(shot.time),
+              );
+            })
+            .join('');
+        }
+
+        function renderAnomalies() {
+          var items = DATA.anomalies || [];
+          var errors = items.filter(function (item) {
+            return item.level !== 'WARNING';
+          });
+          var count = el('count-logs');
+          count.textContent = errors.length;
+          count.classList.toggle('is-alert', errors.length > 0);
+
+          el('anomalies').innerHTML = items
+            .map(function (item) {
+              var testCase =
+                item.caseIndex >= 0
+                  ? '<button class="link" type="button" data-case="' +
+                    item.caseIndex +
+                    '">' +
+                    escapeHtml(item.testCase) +
+                    '</button>'
+                  : '<b>' + escapeHtml(item.testCase) + '</b>';
+              return (
+                '<div class="anomaly" data-level="' +
+                escapeHtml(item.level) +
+                '">' +
+                '<div class="anomaly-head">' +
+                pill(item.level) +
+                '<span class="anomaly-context">' +
+                testCase +
+                ' &middot; ' +
+                escapeHtml(item.step) +
+                ' &middot; ' +
+                escapeHtml(clock(item.time)) +
+                '</span>' +
+                (item.occurrences > 1
+                  ? '<span class="pill pill-neutral">' +
+                    item.occurrences +
+                    ' times</span>'
+                  : '') +
+                '</div>' +
+                '<div class="anomaly-message">' +
+                escapeHtml(item.message) +
+                '</div>' +
+                (item.stackTrace
+                  ? '<details class="trace-wrap"><summary>Technical details (stack trace)</summary><div class="trace">' +
+                    escapeHtml(item.stackTrace) +
+                    '</div></details>'
+                  : '') +
+                '</div>'
+              );
+            })
+            .join('');
+        }
+
+        function filterAnomalies() {
+          var choice = el('log-filter').value;
+          var shown = 0;
+          each(el('anomalies').querySelectorAll('.anomaly'), function (node) {
+            var level = node.getAttribute('data-level');
+            var visible =
+              choice === 'ALL' ||
+              (choice === 'ERRORS' ? level !== 'WARNING' : level === choice);
+            node.hidden = !visible;
+            if (visible) {
+              shown += 1;
+            }
+          });
+
+          var empty = el('anomalies-filtered');
+          empty.hidden = shown > 0;
+          empty.textContent =
+            choice === 'WARNING'
+              ? 'No warnings in this run. Skipped or pending steps show up here.'
+              : choice === 'ERRORS'
+                ? 'No errors or failures in this run.'
+                : 'No errors or warnings in this run.';
+        }
+
+        function specs(rows) {
+          return rows
+            .map(function (row) {
+              return (
+                '<div class="spec"><dt>' +
+                escapeHtml(row[0]) +
+                '</dt><dd>' +
+                escapeHtml(row[1] || '-') +
+                '</dd></div>'
+              );
+            })
+            .join('');
+        }
+
+        function renderEnvironment() {
+          var env = DATA.environment || {};
+          el('target-specs').innerHTML = specs([
+            ['Base URL', env.baseUrl],
+            ['Browser', env.browser],
+            ['Viewport', env.viewport],
+            ['Locale', env.locale],
+            ['Action timeout', env.timeout],
+            ['Tag filter', env.tags || 'none (all scenarios)'],
+          ]);
+          el('machine-specs').innerHTML = specs([
+            ['Node.js', env.node],
+            ['Cucumber', env.cucumber],
+            ['Playwright', env.playwright],
+          ]);
+        }
+
+        function toggleAll(open) {
+          each(el('cases').querySelectorAll('.case'), function (node) {
+            setOpen(node, open);
+          });
+        }
+
+        function activateTab(name) {
+          each(document.querySelectorAll('.tab'), function (tab) {
+            var active = tab.getAttribute('data-panel') === name;
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            tab.tabIndex = active ? 0 : -1;
+          });
+          each(document.querySelectorAll('.panel'), function (panel) {
+            panel.hidden = panel.id !== 'panel-' + name;
+          });
+        }
+
+        function bindTabs() {
+          var tabs = Array.prototype.slice.call(
+            document.querySelectorAll('.tab'),
+          );
+          tabs.forEach(function (tab, index) {
+            tab.addEventListener('click', function () {
+              activateTab(tab.getAttribute('data-panel'));
+            });
+            tab.addEventListener('keydown', function (event) {
+              var step =
+                event.key === 'ArrowRight'
+                  ? 1
+                  : event.key === 'ArrowLeft'
+                    ? -1
+                    : 0;
+              if (!step) {
+                return;
+              }
+              event.preventDefault();
+              var next = tabs[(index + step + tabs.length) % tabs.length];
+              activateTab(next.getAttribute('data-panel'));
+              next.focus();
+            });
+          });
+        }
+
+        function bindLightbox() {
+          var opener = null;
+
+          function close() {
+            if (!el('lightbox').classList.contains('is-open')) {
+              return;
+            }
+            el('lightbox').classList.remove('is-open');
+            if (opener) {
+              opener.focus();
+            }
+          }
+
+          document.addEventListener('click', function (event) {
+            var shot = event.target.closest
+              ? event.target.closest('.shot')
+              : null;
+            if (shot) {
+              opener = shot;
+
+              var full = document.querySelector(
+                '.case-body .shot[data-shot="' +
+                  shot.getAttribute('data-shot') +
+                  '"] img',
+              );
+              el('lightbox-image').src = (
+                full || shot.querySelector('img')
+              ).src;
+              el('lightbox-image').alt =
+                shot.getAttribute('data-caption') || '';
+              el('lightbox-caption').textContent =
+                shot.getAttribute('data-caption') || '';
+              el('lightbox').classList.add('is-open');
+              el('lightbox-close').focus();
+            }
+          });
+
+          el('lightbox').addEventListener('click', function (event) {
+            if (event.target !== el('lightbox-image')) {
+              close();
+            }
+          });
+          document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+              close();
+            }
+            if (
+              event.key === 'Tab' &&
+              el('lightbox').classList.contains('is-open')
+            ) {
+              event.preventDefault();
+              el('lightbox-close').focus();
+            }
+          });
+        }
+
+        function bindControls() {
+          bindTabs();
+          document.addEventListener('click', function (event) {
+            var target = event.target.closest
+              ? event.target.closest('[data-case]')
+              : null;
+            if (target) {
+              openCase(parseInt(target.getAttribute('data-case'), 10));
+            }
+          });
+
+          el('case-search').addEventListener('input', filterCases);
+          el('case-filter').addEventListener('change', filterCases);
+          el('feature-filter').addEventListener('change', filterCases);
+          el('log-filter').addEventListener('change', filterAnomalies);
+
+          el('expand-all').addEventListener('click', function () {
+            toggleAll(true);
+          });
+          el('collapse-all').addEventListener('click', function () {
+            toggleAll(false);
+          });
+
+          el('export-pdf').addEventListener('click', function () {
+            prepareForPrint();
+            window.print();
+          });
+          window.addEventListener('beforeprint', prepareForPrint);
+          bindLightbox();
+        }
+
+        function prepareForPrint() {
+          toggleAll(true);
+          each(
+            document.querySelectorAll('details.trace-wrap'),
+            function (node) {
+              node.open = true;
+            },
+          );
+          each(document.querySelectorAll('#gallery .shot'), function (shot) {
+            var full = document.querySelector(
+              '.case-body .shot[data-shot="' +
+                shot.getAttribute('data-shot') +
+                '"] img',
+            );
+            var img = shot.querySelector('img');
+            if (full && img && img.src !== full.src) {
+              img.src = full.src;
+            }
+          });
+        }
+
+        function fitCodeColumn() {
+          var longest = cases().reduce(function (current, item) {
+            return item.code.length > current.length ? item.code : current;
+          }, '');
+          var probe = document.createElement('span');
+          probe.className = 'code-chip';
+          probe.style.position = 'absolute';
+          probe.style.visibility = 'hidden';
+          probe.textContent = longest;
+          document.body.appendChild(probe);
+          var width = Math.ceil(probe.getBoundingClientRect().width);
+          document.body.removeChild(probe);
+          document.documentElement.style.setProperty(
+            '--code-col',
+            Math.max(width, 92) + 'px',
+          );
+        }
+
+        function renderFatal(error) {
+          document.querySelector('.page').innerHTML =
+            '<div class="card fatal"><h2>This report could not be displayed</h2>' +
+            '<p>' +
+            escapeHtml(error && error.message ? error.message : error) +
+            '</p>' +
+            '<p>Generate it again from the last run with <code>npm run report</code>, or rerun the tests with ' +
+            '<code>npm run test:report</code>.</p></div>';
+        }
+
+        try {
+          document.documentElement.classList.remove('no-js');
+          DATA = JSON.parse(el('execution-data').textContent);
+
+          if (!document.documentElement.hasAttribute('data-prerendered')) {
+            renderHero();
+            renderAttention();
+            renderBreakdown();
+            renderDonuts();
+            renderDurations();
+            renderCases();
+            fitCodeColumn();
+            renderFeatureFilter();
+            renderGallery();
+            renderAnomalies();
+            filterAnomalies();
+            renderEnvironment();
+          }
+          bindCaseHeads();
+          bindControls();
+          activateTab('overview');
+        } catch (error) {
+          renderFatal(error);
+        }
+      })();
+    </script>
+  </body>
+</html>

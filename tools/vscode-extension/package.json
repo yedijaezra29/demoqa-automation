@@ -1,0 +1,221 @@
+{
+  "name": "demoqa-tests",
+  "displayName": "Demoqa Tests",
+  "description": "Skenario Cucumber di panel Testing VS Code: status per skenario dan step dari reports/messages.ndjson, tombol Run per skenario atau feature, dan Test Suite untuk menyimpan, mencentang, dan menjalankan kumpulan skenario.",
+  "version": "0.1.0",
+  "publisher": "yedijaezra",
+  "private": true,
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Testing"
+  ],
+  "activationEvents": [
+    "workspaceContains:cucumber.mjs"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Tombol Run menjalankan command npm di terminal, jadi extension hanya aktif di folder yang sudah dipercaya."
+    },
+    "virtualWorkspaces": false
+  },
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Demoqa Tests",
+      "properties": {
+        "demoqaTests.runCommand": {
+          "type": "string",
+          "default": "npm run test:raw",
+          "description": "Command untuk menjalankan skenario. Tag dikirim lewat TAGS, file:baris lewat argumen setelah --.",
+          "scope": "machine"
+        }
+      }
+    },
+    "views": {
+      "test": [
+        {
+          "id": "demoqaTestSuites",
+          "name": "Demoqa Test Suites",
+          "when": "demoqaTests.enabled"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "demoqaTestSuites",
+        "contents": "Belum ada test suite. Test suite menyimpan daftar skenario yang bisa dicentang lalu dijalankan bersama.\n[Buat Test Suite](command:demoqaTests.suite.create)",
+        "when": "demoqaTests.enabled"
+      }
+    ],
+    "commands": [
+      {
+        "command": "demoqaTests.suite.create",
+        "title": "Buat Test Suite",
+        "category": "Demoqa Tests",
+        "icon": "$(add)"
+      },
+      {
+        "command": "demoqaTests.suite.run",
+        "title": "Jalankan Skenario yang Dicentang",
+        "category": "Demoqa Tests",
+        "icon": "$(play)"
+      },
+      {
+        "command": "demoqaTests.suite.add",
+        "title": "Tambah Skenario…",
+        "category": "Demoqa Tests",
+        "icon": "$(diff-added)"
+      },
+      {
+        "command": "demoqaTests.suite.rename",
+        "title": "Ganti Nama",
+        "category": "Demoqa Tests",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "demoqaTests.suite.delete",
+        "title": "Hapus Test Suite",
+        "category": "Demoqa Tests",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "demoqaTests.suite.remove",
+        "title": "Keluarkan dari Suite",
+        "category": "Demoqa Tests",
+        "icon": "$(close)"
+      },
+      {
+        "command": "demoqaTests.suite.addFromExplorer",
+        "title": "Tambah ke Test Suite…",
+        "category": "Demoqa Tests"
+      },
+      {
+        "command": "demoqaTests.suite.sortByFile",
+        "title": "Urutkan Sesuai File .feature",
+        "category": "Demoqa Tests"
+      },
+      {
+        "command": "demoqaTests.suite.sortByTc",
+        "title": "Urutkan Sesuai Nomor TC",
+        "category": "Demoqa Tests"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "demoqaTests.suite.create",
+          "when": "view == demoqaTestSuites",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "demoqaTests.suite.run",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "inline@1"
+        },
+        {
+          "command": "demoqaTests.suite.add",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "inline@2"
+        },
+        {
+          "command": "demoqaTests.suite.run",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "1_run"
+        },
+        {
+          "command": "demoqaTests.suite.add",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "2_edit@1"
+        },
+        {
+          "command": "demoqaTests.suite.rename",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "2_edit@2"
+        },
+        {
+          "command": "demoqaTests.suite.delete",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "3_delete"
+        },
+        {
+          "command": "demoqaTests.suite.remove",
+          "when": "view == demoqaTestSuites && viewItem == entry",
+          "group": "inline"
+        },
+        {
+          "command": "demoqaTests.suite.remove",
+          "when": "view == demoqaTestSuites && viewItem == entry",
+          "group": "1_edit"
+        },
+        {
+          "command": "demoqaTests.suite.sortByFile",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "2_edit@3"
+        },
+        {
+          "command": "demoqaTests.suite.sortByTc",
+          "when": "view == demoqaTestSuites && viewItem == suite",
+          "group": "2_edit@4"
+        }
+      ],
+      "testing/item/context": [
+        {
+          "command": "demoqaTests.suite.addFromExplorer",
+          "when": "controllerId == demoqaTests",
+          "group": "suite"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "demoqaTests.suite.run",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.add",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.rename",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.delete",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.remove",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.addFromExplorer",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.sortByFile",
+          "when": "false"
+        },
+        {
+          "command": "demoqaTests.suite.sortByTc",
+          "when": "false"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node20 --external:vscode --outfile=out/extension.js && esbuild src/order-plugin.ts --bundle --platform=node --format=esm --target=node20 --outfile=out/order-plugin.mjs",
+    "package": "npm run typecheck && npm run build && vsce package --no-dependencies --allow-missing-repository --skip-license -o demoqa-tests.vsix && rm -rf out"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "@types/vscode": "1.93.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  }
+}

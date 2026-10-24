@@ -1,0 +1,24 @@
+{
+  "sizes": {
+    "400 x 200": {
+      "drag": { "width": 400, "height": 200 },
+      "expected": { "width": 400, "height": 200 }
+    },
+    "150 x 150": {
+      "drag": { "width": 150, "height": 150 },
+      "expected": { "width": 150, "height": 150 }
+    },
+    "500 x 300": {
+      "drag": { "width": 500, "height": 300 },
+      "expected": { "width": 500, "height": 300 }
+    },
+    "600 x 400": {
+      "drag": { "width": 600, "height": 400 },
+      "expected": { "width": 500, "height": 300 }
+    },
+    "100 x 100": {
+      "drag": { "width": 100, "height": 100 },
+      "expected": { "width": 150, "height": 150 }
+    }
+  }
+}

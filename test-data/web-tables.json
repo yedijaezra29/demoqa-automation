@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "firstName": "Andi",
+      "lastName": "Pratama",
+      "email": "andi.pratama@example.com",
+      "age": "28",
+      "salary": "8500000",
+      "department": "Engineering"
+    },
+    {
+      "firstName": "Sari",
+      "lastName": "Wulandari",
+      "email": "sari.wulandari@example.com",
+      "age": "32",
+      "salary": "9200000",
+      "department": "Finance"
+    },
+    {
+      "firstName": "Rizky",
+      "lastName": "Hidayat",
+      "email": "rizky.hidayat@example.com",
+      "age": "25",
+      "salary": "7000000",
+      "department": "Marketing"
+    },
+    {
+      "firstName": "Dewi",
+      "lastName": "Lestari",
+      "email": "dewi.lestari@example.com",
+      "age": "41",
+      "salary": "12500000",
+      "department": "Legal"
+    },
+    {
+      "firstName": "Fajar",
+      "lastName": "Nugroho",
+      "email": "fajar.nugroho@example.com",
+      "age": "36",
+      "salary": "10000000",
+      "department": "Operations"
+    }
+  ],
+  "newUser": {
+    "firstName": "Rina",
+    "lastName": "Kusuma",
+    "email": "rina.kusuma@example.com",
+    "age": "27",
+    "salary": "8000000",
+    "department": "Design"
+  },
+  "search": {
+    "keyword": "Lestari",
+    "expectedEmail": "dewi.lestari@example.com"
+  },
+  "searchWithoutResult": "tidak-ada-di-tabel",
+  "userToDelete": "alden@example.com",
+  "invalidInputs": {
+    "email tanpa @": { "field": "Email", "value": "rina.example.com" },
+    "First Name kosong": { "field": "First Name", "value": "" },
+    "Age berisi huruf": { "field": "Age", "value": "ab" },
+    "Salary berisi huruf": { "field": "Salary", "value": "sejuta" }
+  }
+}
