@@ -1,63 +1,76 @@
 # Demoqa Automation Test
 
-Automation test untuk empat halaman di [demoqa.com](https://demoqa.com), ditulis dengan Playwright, TypeScript, dan Cucumber, memakai pola Page Object Model dengan core layer `UIAction` dan `UIAssert`.
+Automated tests for four pages of [demoqa.com](https://demoqa.com), written with Playwright, TypeScript, and Cucumber, using the Page Object Model with a core layer of `UIAction` and `UIAssert`.
 
-Ringkasan project ini dalam bentuk halaman web ada di [docs/index.html](docs/index.html): perbandingan output terminal, cara membaca test yang gagal, report HTML, dan cakupan test.
+A one-page overview of this project is live at [yedijaezra29.github.io/demoqa-automation](https://yedijaezra29.github.io/demoqa-automation/) (source in [docs/index.html](docs/index.html)): terminal output compared side by side, how to read a failed test, the HTML report, and test coverage.
 
-## Daftar isi
+The scenarios, terminal output, and failure messages are written in Indonesian. The terms you will see most:
 
-- [Yang dites](#yang-dites)
-- [Cara menjalankan](#cara-menjalankan)
-- [Daftar command](#daftar-command)
-  - [Menjalankan test](#menjalankan-test)
-  - [Menjalankan Test Suite](#menjalankan-test-suite)
-  - [Mengatur report](#mengatur-report)
-  - [Mengecek kode](#mengecek-kode)
-  - [Mengganti pengaturan untuk satu kali jalan](#mengganti-pengaturan-untuk-satu-kali-jalan)
-- [Output di terminal](#output-di-terminal)
-  - [Contoh: mencari di mana test gagal](#contoh-mencari-di-mana-test-gagal)
-- [Report HTML](#report-html)
-- [Kenapa terminal dan report dibuat custom](#kenapa-terminal-dan-report-dibuat-custom)
-  - [Terminal: bawaan dan custom](#terminal-bawaan-dan-custom)
-  - [Report HTML: bawaan dan custom](#report-html-bawaan-dan-custom)
-- [Mencari penyebab test yang gagal](#mencari-penyebab-test-yang-gagal)
-- [Arsitektur dan struktur folder](#arsitektur-dan-struktur-folder)
-  - [Aturan menulis test](#aturan-menulis-test)
-  - [Method di src/core/](#method-di-srccore)
-- [Pengaturan](#pengaturan)
-- [Extension VS Code (opsional)](#extension-vs-code-opsional)
+| Term         | Meaning                      |
+| ------------ | ---------------------------- |
+| `Seharusnya` | Expected value               |
+| `Tertulis`   | Actual value shown on page   |
+| `Elemen`     | The element that was checked |
+| `Skenario`   | Scenario (`.feature` line)   |
+| `Kode`       | Code (page object line)      |
+| `LOLOS`      | Passed                       |
+| `GAGAL`      | Failed                       |
+| `dtk`        | Seconds                      |
 
-## Yang dites
+## Contents
 
-Ada 28 skenario: 11 positif (fitur bekerja seperti seharusnya) dan 17 negatif (aplikasi menolak isian atau aksi yang salah).
+- [What is tested](#what-is-tested)
+- [Getting started](#getting-started)
+- [Commands](#commands)
+  - [Running tests](#running-tests)
+  - [Running a Test Suite](#running-a-test-suite)
+  - [Managing the report](#managing-the-report)
+  - [Checking the code](#checking-the-code)
+  - [Overriding settings for one run](#overriding-settings-for-one-run)
+- [Terminal output](#terminal-output)
+  - [Example: finding where a test failed](#example-finding-where-a-test-failed)
+- [HTML report](#html-report)
+- [Why I built a custom terminal output and report](#why-i-built-a-custom-terminal-output-and-report)
+  - [Terminal: default vs custom](#terminal-default-vs-custom)
+  - [HTML report: default vs custom](#html-report-default-vs-custom)
+- [Finding the cause of a failed test](#finding-the-cause-of-a-failed-test)
+- [Architecture and folder structure](#architecture-and-folder-structure)
+  - [Rules for writing tests](#rules-for-writing-tests)
+  - [Methods in src/core/](#methods-in-srccore)
+- [Settings](#settings)
+- [VS Code extension (optional)](#vs-code-extension-optional)
 
-| Halaman                   | Positif                                                                                       | Negatif                                                                                                                           |
-| ------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Web Tables                | Menambahkan 5 user sekaligus lalu mengecek semuanya di tabel, mencari user, menghapus user    | Search tanpa hasil, form Add menolak email tanpa @, First Name kosong, Age atau Salary berisi huruf, form kosong                  |
-| Droppable                 | Kotak Drag Me diterima di tab Simple, kotak Acceptable diterima di tab Accept                 | Kotak dilepas di luar area target, kotak Not Acceptable ditolak di tab Accept                                                     |
-| Resizable                 | Ukuran 400 × 200, ukuran minimum 150 × 150, dan maksimum 500 × 300                            | Ditarik melewati batas maksimum atau di bawah batas minimum, ukurannya tertahan di batas                                          |
-| Student Registration Form | Semua field diisi, hanya field wajib diisi, Mobile lebih dari 10 digit dipotong jadi 10 digit | First Name atau Last Name kosong, Mobile kurang dari 10 digit atau berisi huruf, email tanpa @, Gender tidak dipilih, form kosong |
+## What is tested
 
-## Cara menjalankan
+There are 28 scenarios: 11 positive (the feature works as intended) and 17 negative (the app rejects wrong input or actions).
 
-Komputer perlu Node.js versi 20.12 atau lebih baru. Semua command di bawah sama untuk macOS, Linux, dan Windows (Command Prompt atau PowerShell), dan cukup dijalankan dari terminal. Extension VS Code tidak wajib.
+| Page                      | Positive                                                                                      | Negative                                                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Web Tables                | Adds 5 users at once and checks each one in the table, searches for a user, deletes a user    | Search with no results, the Add form rejects an email without @, an empty First Name, letters in Age or Salary, an empty form |
+| Droppable                 | Drag Me is accepted on the Simple tab, Acceptable is accepted on the Accept tab               | A box dropped outside the target, Not Acceptable rejected on the Accept tab                                                   |
+| Resizable                 | Size 400 × 200, the 150 × 150 minimum, and the 500 × 300 maximum                              | Dragged past the maximum or below the minimum, the box stops at the limit                                                     |
+| Student Registration Form | All fields filled, only required fields filled, a Mobile number over 10 digits cut down to 10 | Empty First Name or Last Name, Mobile under 10 digits or containing letters, email without @, no Gender selected, empty form  |
 
-Install dependency sekali saja:
+## Getting started
+
+You need Node.js 20.12 or newer. Every command below is the same on macOS, Linux, and Windows (Command Prompt or PowerShell) and runs from a terminal. The VS Code extension is optional.
+
+Install dependencies once:
 
 ```bash
 npm install
 npx playwright install chromium
 ```
 
-Jalankan semua test:
+Run every test:
 
 ```bash
 npm test
 ```
 
-Setelah test selesai, report HTML terbuka sendiri di browser. Filenya ada di `reports/test-report.html`.
+When the run finishes, the HTML report opens in your browser. The file is `reports/test-report.html`.
 
-Untuk menjalankan satu test saja:
+To run one page only:
 
 ```bash
 npm run test:webtables
@@ -66,26 +79,26 @@ npm run test:resizable
 npm run test:practice-form
 ```
 
-Kalau ingin melihat browsernya bergerak, jalankan `npm run test:headed`.
+To watch the browser while tests run, use `npm run test:headed`.
 
-## Daftar command
+## Commands
 
-Semua command dijalankan dari folder utama project.
+Run every command from the project root.
 
-### Menjalankan test
+### Running tests
 
-| Command                       | Fungsi                                                 |
-| ----------------------------- | ------------------------------------------------------ |
-| `npm test`                    | Jalankan semua test, lalu buat dan buka report HTML    |
-| `npm run test:webtables`      | Jalankan test Web Tables saja                          |
-| `npm run test:droppable`      | Jalankan test Droppable saja                           |
-| `npm run test:resizable`      | Jalankan test Resizable saja                           |
-| `npm run test:practice-form`  | Jalankan test Student Registration Form saja           |
-| `npm test -- --tags @FORM-01` | Jalankan test berdasarkan tag                          |
-| `npm run test:raw`            | Jalankan semua test tanpa membuat report (lebih cepat) |
-| `npm run test:headed`         | Jalankan semua test dengan browser terlihat            |
+| Command                       | What it does                                        |
+| ----------------------------- | --------------------------------------------------- |
+| `npm test`                    | Run every test, then build and open the HTML report |
+| `npm run test:webtables`      | Run Web Tables tests only                           |
+| `npm run test:droppable`      | Run Droppable tests only                            |
+| `npm run test:resizable`      | Run Resizable tests only                            |
+| `npm run test:practice-form`  | Run Student Registration Form tests only            |
+| `npm test -- --tags @FORM-01` | Run tests by tag                                    |
+| `npm run test:raw`            | Run every test without building a report (faster)   |
+| `npm run test:headed`         | Run every test with the browser visible             |
 
-Setiap skenario punya nomor TC (`@WEBTABLES-01` sampai `@WEBTABLES-09`, `@DROPPABLE-01` sampai `04`, `@RESIZABLE-01` sampai `05`, `@FORM-01` sampai `10`) dan tag `@positive` atau `@negative`. Beberapa contoh:
+Every scenario has a TC number (`@WEBTABLES-01` to `@WEBTABLES-09`, `@DROPPABLE-01` to `04`, `@RESIZABLE-01` to `05`, `@FORM-01` to `10`) and a `@positive` or `@negative` tag. A few examples:
 
 ```bash
 npm test -- --tags @positive
@@ -94,39 +107,39 @@ npm test -- --tags "@webtables and @negative"
 npm test -- --tags "@WEBTABLES-01 or @FORM-01"
 ```
 
-### Menjalankan Test Suite
+### Running a Test Suite
 
-| Command                              | Fungsi                                    |
-| ------------------------------------ | ----------------------------------------- |
-| `npm run suite`                      | Tampilkan daftar Test Suite               |
-| `npm run suite -- Regresi`           | Jalankan suite Regresi, lalu buat report  |
-| `npm run suite -- Smoke --no-report` | Jalankan suite Smoke tanpa membuat report |
+| Command                              | What it does                                  |
+| ------------------------------------ | --------------------------------------------- |
+| `npm run suite`                      | List the Test Suites                          |
+| `npm run suite -- Regresi`           | Run the Regresi suite, then build the report  |
+| `npm run suite -- Smoke --no-report` | Run the Smoke suite without building a report |
 
-Suite yang tersedia: Regresi (semua skenario), Smoke (satu skenario utama per halaman), Positif, dan Negatif. Skenario dijalankan sesuai urutan di suite.
+Available suites: Regresi (regression, every scenario), Smoke (one main scenario per page), Positif (positive), and Negatif (negative). Scenarios run in the order listed in the suite.
 
-Daftar suite ada di `test-suites.json`. Untuk membuat suite baru tanpa VS Code, salin salah satu suite di file itu, ganti `name`-nya, lalu atur daftar `entries`. Skenario yang `checked`-nya `false` dilewati.
+The suites live in `test-suites.json`. To add a suite without VS Code, copy one suite in that file, change its `name`, and edit its `entries`. Entries with `checked` set to `false` are skipped.
 
-### Mengatur report
+### Managing the report
 
-| Command                | Fungsi                                       |
-| ---------------------- | -------------------------------------------- |
-| `npm run report`       | Buat ulang report dari hasil test terakhir   |
-| `npm run report:open`  | Buka report terakhir di browser              |
-| `npm run report:clean` | Hapus folder `reports/` beserta semua isinya |
+| Command                | What it does                                  |
+| ---------------------- | --------------------------------------------- |
+| `npm run report`       | Rebuild the report from the last test run     |
+| `npm run report:open`  | Open the last report in the browser           |
+| `npm run report:clean` | Delete the `reports/` folder and its contents |
 
-### Mengecek kode
+### Checking the code
 
-| Command                | Fungsi                                           |
-| ---------------------- | ------------------------------------------------ |
-| `npm run check`        | Cek tipe TypeScript, format kode, dan unit test  |
-| `npm run typecheck`    | Cek tipe TypeScript saja                         |
-| `npm run format`       | Rapikan format semua file                        |
-| `npm run format:check` | Cek format tanpa mengubah file                   |
-| `npm run test:unit`    | Jalankan unit test untuk pesan error di terminal |
+| Command                | What it does                                         |
+| ---------------------- | ---------------------------------------------------- |
+| `npm run check`        | TypeScript type check, format check, and unit tests  |
+| `npm run typecheck`    | TypeScript type check only                           |
+| `npm run format`       | Format every file                                    |
+| `npm run format:check` | Check formatting without changing files              |
+| `npm run test:unit`    | Run the unit tests for the terminal failure messages |
 
-### Mengganti pengaturan untuk satu kali jalan
+### Overriding settings for one run
 
-Pengaturan di `.env` juga bisa diganti untuk satu kali jalan saja. Di macOS dan Linux, tulis di depan command:
+Any setting from `.env` can be overridden for a single run. On macOS and Linux, put it in front of the command:
 
 ```bash
 HEADLESS=false npm run test:droppable
@@ -134,44 +147,44 @@ BROWSER=firefox npm test
 PROGRESS=detail npm test
 ```
 
-Di Windows PowerShell:
+In Windows PowerShell:
 
 ```powershell
 $env:HEADLESS="false"; npm run test:droppable
 ```
 
-Di Windows Command Prompt:
+In Windows Command Prompt:
 
 ```bat
 set HEADLESS=false&& npm run test:droppable
 ```
 
-Di PowerShell dan Command Prompt, nilai itu berlaku sampai jendela terminal ditutup. Kalau ragu, cara yang sama untuk semua sistem adalah mengubah file `.env` (salinan dari `.env.example`).
+In PowerShell and Command Prompt the value stays set until you close that terminal window. The one method that works the same everywhere is editing `.env` (a copy of `.env.example`).
 
-`PROGRESS=detail` menampilkan step setiap test case di terminal, termasuk yang lolos.
+`PROGRESS=detail` prints the steps of every test case in the terminal, including the ones that pass.
 
-## Output di terminal
+## Terminal output
 
-Tampilan terminal di project ini dibuat sendiri oleh yedijaezra (custom) dan sudah dipakai di beberapa project selama bekerja, bukan output bawaan Cucumber. Setiap test case tampil satu baris: selama berjalan `▶ [2/28] FORM-02 ...`, lalu diganti hasilnya, misalnya `✔ [2/28] FORM-02  Mengisi field wajib saja sudah cukup untuk submit  3,1 dtk`.
+I (yedijaezra) built the terminal output for this project myself, and I have used it on several projects at work. It replaces Cucumber's default output. Each test case takes one line: `▶ [2/28] FORM-02 ...` while it runs, then the result, for example `✔ [2/28] FORM-02  Mengisi field wajib saja sudah cukup untuk submit  3,1 dtk`.
 
-Untuk test case yang gagal, terminal menampilkan semua step-nya (✔ lolos, ✘ gagal, ○ tidak dijalankan), alasan gagal dalam kalimat biasa, nilai yang diharapkan dan yang tertulis di halaman, lalu tiga lokasi yang bisa langsung dibuka (cmd+klik atau ctrl+klik di terminal VS Code):
+For a failed test case, the terminal shows every step (✔ passed, ✘ failed, ○ not run), the reason in plain words, the expected value next to what the page shows, and three locations you can open directly (cmd+click or ctrl+click in the VS Code terminal):
 
-- **Skenario**: baris di file `.feature`
-- **Kode**: baris kode yang gagal, biasanya di file page
-- **Step**: step definition yang menjalankannya
+- **Skenario**: the line in the `.feature` file
+- **Kode**: the line of code that failed, usually in the page object
+- **Step**: the step definition that ran it
 
-### Contoh: mencari di mana test gagal
+### Example: finding where a test failed
 
-Supaya terlihat cara kerjanya, buat satu test gagal dengan sengaja:
+To see how it works, make one test fail on purpose:
 
-1. Buka `test-data/practice-form.json`. Di bagian `confirmation`, ganti `"Gender": "Male"` jadi `"Gender": "Female"`.
-2. Jalankan:
+1. Open `test-data/practice-form.json`. In the `confirmation` section, change `"Gender": "Male"` to `"Gender": "Female"`.
+2. Run:
 
    ```bash
    npm run test:raw -- --tags @FORM-01
    ```
 
-3. Terminal menampilkan:
+3. The terminal shows:
 
    ```
    ✘ [1/1] FORM-01  Mengisi semua field lalu submit  9,5 dtk
@@ -195,228 +208,228 @@ Supaya terlihat cara kerjanya, buat satu test gagal dengan sengaja:
          features/practice-form/practice-form.feature:8
    ```
 
-4. Cara membacanya:
-   - Tiga step pertama lolos. Step `✘ Then popup konfirmasi menampilkan semua data student` adalah yang gagal.
-   - Di bawahnya ada alasannya: test mengharapkan Gender "Female", tapi popup menulis "Male". `Elemen` menunjukkan bagian halaman yang dicek, yaitu nilai Gender di popup. Nama ini diambil dari argumen terakhir pemanggilan `UIAssert` di file page.
-   - Tahan cmd (macOS) atau ctrl (Windows dan Linux), lalu klik salah satu lokasi untuk membuka file tepat di baris itu:
-     - `Skenario` membuka step yang gagal di file `.feature`.
-     - `Kode` membuka baris pengecekan yang gagal di file page. Baris di dalam `src/core/` dilewati, jadi yang terbuka selalu baris di page object.
-     - `Step` membuka step definition yang memanggil pengecekan itu.
-   - Di contoh ini aplikasinya benar dan yang salah adalah data expected-nya, jadi perbaikannya di `test-data/practice-form.json`.
+4. How to read it:
+   - The first three steps passed. The step `✘ Then popup konfirmasi menampilkan semua data student` (the confirmation popup shows all student data) is the one that failed.
+   - Below it is the reason: `Teks tidak sesuai` (text does not match). The test expected Gender "Female", but the popup says "Male". `Elemen` names the part of the page that was checked, the Gender value in the popup. The name comes from the last argument of the `UIAssert` call in the page object.
+   - Hold cmd (macOS) or ctrl (Windows and Linux) and click a location to open the file at that exact line:
+     - `Skenario` opens the failed step in the `.feature` file.
+     - `Kode` opens the check that failed in the page object. Lines inside `src/core/` are skipped, so it always lands in the page object.
+     - `Step` opens the step definition that called that check.
+   - In this example the app is right and the expected data is wrong, so the fix goes in `test-data/practice-form.json`.
 
-5. Kembalikan `"Gender": "Female"` jadi `"Gender": "Male"`.
+5. Change `"Gender": "Female"` back to `"Gender": "Male"`.
 
-Klik lokasi ini berjalan di terminal bawaan VS Code. Di terminal lain kemampuannya berbeda-beda, jadi kalau tidak bisa diklik, buka file dan nomor barisnya secara manual.
+Clickable locations work in the VS Code terminal. Other terminals vary, so if a location is not clickable, open the file and go to that line by hand.
 
-Di akhir run selalu ada ringkasan dan daftar test case yang perlu dicek. Untuk melihat setiap step selama test berjalan, jalankan dengan `PROGRESS=detail`.
+Every run ends with a summary and a list of test cases to check. To see every step while tests run, use `PROGRESS=detail`.
 
-## Report HTML
+## HTML report
 
-Report HTML di project ini juga dibuat sendiri oleh yedijaezra (custom) dan sudah dipakai di beberapa project selama bekerja, bukan report bawaan Cucumber. `npm test` membuat `reports/test-report.html` dan membukanya di browser. Report ini satu file saja, jadi bisa dibuka dengan double-click atau dikirim ke orang lain tanpa server. Isinya:
+I also built the HTML report myself, and use it on several projects at work. It replaces Cucumber's default report. `npm test` writes `reports/test-report.html` and opens it in the browser. The report is a single file, so you can double-click it or send it to someone without a server. It has five tabs:
 
-- **Overview**: persentase lolos, hasil per halaman, test case yang gagal, dan durasi setiap test case.
-- **Scenarios & Steps**: setiap test case dan step-nya, lengkap dengan status, durasi, log, pesan error, dan screenshot. Bisa dicari dan difilter per status.
-- **Screenshots**: semua screenshot dalam satu galeri. Defaultnya diambil di setiap pengecekan hasil (step Then/And) dan saat test case gagal.
-- **Errors & Warnings**: semua kegagalan dalam satu daftar, dengan stack trace yang memakai path relatif terhadap folder project.
-- **Environment**: URL yang dites, browser, viewport, timeout, tag yang dipakai, dan versi Node.js, Cucumber, dan Playwright.
+- **Overview**: pass rate, results per page, failed test cases, and the duration of each test case.
+- **Scenarios & Steps**: every test case and its steps with status, duration, logs, error messages, and screenshots. Searchable and filterable by status.
+- **Screenshots**: every screenshot in one gallery. By default one is taken at each result check (Then/And steps) and whenever a test case fails.
+- **Errors & Warnings**: all failures in one list, with stack traces that use paths relative to the project folder.
+- **Environment**: the tested URL, browser, viewport, timeout, tags, and the Node.js, Cucumber, and Playwright versions.
 
-Tombol **Export PDF** di report menyimpan report sebagai PDF. Report dari run terakhir bisa dibuat ulang tanpa menjalankan test lagi dengan `npm run report`.
+The **Export PDF** button saves the report as a PDF. To rebuild the report from the last run without running the tests again, use `npm run report`.
 
-## Kenapa terminal dan report dibuat custom
+## Why I built a custom terminal output and report
 
-Saya (yedijaezra) membuat tampilan terminal dan report sendiri karena bawaan Cucumber kurang jelas dibaca, terutama saat ada test yang gagal. Semua gambar di bawah diambil dari run yang sama: lima test case Student Registration Form, dengan FORM-01 sengaja dibuat gagal (Gender di data expected diganti jadi "Female").
+Cucumber's default output and report are hard to read, especially when a test fails, so I built my own. All images below come from one run: five Student Registration Form test cases, with FORM-01 failing on purpose (the expected Gender in the test data changed to "Female").
 
-Gambar di bagian ini diambil sebelum project memakai core `UIAction` dan `UIAssert`. Sejak itu path file diawali `features/`, baris `Elemen` berisi nama elemen seperti `Nilai Gender di popup konfirmasi`, dan pesan gagal di output bawaan Cucumber berupa satu baris dari `UIAssert` lalu stack trace. Contoh output terbaru ada di [Contoh: mencari di mana test gagal](#contoh-mencari-di-mana-test-gagal).
+These images were taken before the project moved to the `UIAction` and `UIAssert` core. Since then, file paths start with `features/`, the `Elemen` line holds an element name such as `Nilai Gender di popup konfirmasi`, and the failure in Cucumber's default output is a single line from `UIAssert` followed by a stack trace. The latest output is in [Example: finding where a test failed](#example-finding-where-a-test-failed).
 
-### Terminal: bawaan dan custom
+### Terminal: default vs custom
 
 <table>
   <tr>
-    <th width="50%">Bawaan Cucumber</th>
+    <th width="50%">Cucumber default</th>
     <th width="50%">Custom</th>
   </tr>
   <tr>
-    <td><img src="docs/images/terminal-bawaan.png" alt="Output terminal bawaan Cucumber saat FORM-01 gagal" width="100%"></td>
-    <td><img src="docs/images/terminal-custom.png" alt="Output terminal custom saat FORM-01 gagal" width="100%"></td>
+    <td><img src="docs/images/terminal-bawaan.png" alt="Default Cucumber terminal output when FORM-01 fails" width="100%"></td>
+    <td><img src="docs/images/terminal-custom.png" alt="Custom terminal output when FORM-01 fails" width="100%"></td>
   </tr>
   <tr>
     <td valign="top">
       <ul>
-        <li>Selama test berjalan hanya ada titik-titik, tanpa nama test case.</li>
-        <li>Alasan gagal berupa pesan teknis Playwright yang panjang, lalu call log dan stack trace dari <code>node_modules</code>.</li>
+        <li>While tests run you only see dots, with no test case names.</li>
+        <li>The failure reason is Playwright's long technical message, followed by a call log and a stack trace from <code>node_modules</code>.</li>
       </ul>
     </td>
     <td valign="top">
       <ul>
-        <li>Satu baris per test case, lengkap dengan nomor TC dan durasinya.</li>
-        <li>Step test case yang gagal ditampilkan semua, dengan alasan gagal singkat dan nilai seharusnya dan tertulis.</li>
-        <li>Tiga lokasi yang bisa diklik, lalu ringkasan dan daftar test yang perlu dicek.</li>
+        <li>One line per test case, with its TC number and duration.</li>
+        <li>A failed test case lists all of its steps, a short reason, and the expected value next to the actual one.</li>
+        <li>Three clickable locations, then a summary and a list of tests to check.</li>
       </ul>
     </td>
   </tr>
 </table>
 
-### Report HTML: bawaan dan custom
+### HTML report: default vs custom
 
 <table>
   <tr>
-    <th width="50%">Bawaan Cucumber</th>
+    <th width="50%">Cucumber default</th>
     <th width="50%">Custom</th>
   </tr>
   <tr>
-    <td><img src="docs/images/report-bawaan.png" alt="Report HTML bawaan Cucumber" width="100%"></td>
-    <td><img src="docs/images/report-custom-overview.png" alt="Report HTML custom, halaman Overview" width="100%"></td>
+    <td><img src="docs/images/report-bawaan.png" alt="Default Cucumber HTML report" width="100%"></td>
+    <td><img src="docs/images/report-custom-overview.png" alt="Custom HTML report, Overview tab" width="100%"></td>
   </tr>
   <tr>
     <td valign="top">
       <ul>
-        <li>Daftar skenario dan step dengan statusnya, plus filter lolos atau gagal.</li>
-        <li>Pesan error teknis ditampilkan apa adanya di bawah step yang gagal.</li>
-        <li>Bagian atas menampilkan sistem operasi laptop.</li>
+        <li>A list of scenarios and steps with their status, plus a passed or failed filter.</li>
+        <li>The technical error is printed as-is under the failed step.</li>
+        <li>The header shows the laptop's operating system.</li>
       </ul>
     </td>
     <td valign="top">
       <ul>
-        <li>Halaman pertama langsung menunjukkan persentase lolos, jumlah per status, dan test yang perlu dicek.</li>
-        <li>Ada daftar semua error di satu tempat dan tombol Export PDF.</li>
-        <li>Bisa dibaca PM atau client tanpa membuka kode.</li>
+        <li>The first page shows the pass rate, the count per status, and the tests to check.</li>
+        <li>Every error in one list, and an Export PDF button.</li>
+        <li>A PM or client can read it without opening the code.</li>
       </ul>
     </td>
   </tr>
 </table>
 
-Report custom juga punya galeri yang mengumpulkan screenshot dari setiap pengecekan, termasuk saat test gagal. Report bawaan tidak punya galeri seperti ini.
+The custom report also has a gallery of the screenshots from every check, including failures. The default report has nothing like it.
 
-<img src="docs/images/report-custom-screenshots.png" alt="Report HTML custom, galeri screenshot" width="100%">
+<img src="docs/images/report-custom-screenshots.png" alt="Custom HTML report, screenshot gallery" width="100%">
 
-## Mencari penyebab test yang gagal
+## Finding the cause of a failed test
 
-Pesan gagal sengaja dibuat supaya siapa pun yang memakai atau merawat automation ini, bukan hanya pembuatnya, langsung tahu harus membuka file mana. Setiap kegagalan menunjuk tiga lokasi, dan masing-masing mewakili satu lapisan kode:
+I wrote the failure messages so that anyone who uses or maintains this suite, not only me, knows which file to open. Every failure points to three locations, one per layer of the code:
 
-| Lokasi     | File                                | Isinya                                |
-| ---------- | ----------------------------------- | ------------------------------------- |
-| `Skenario` | `features/<fitur>/<fitur>.feature`  | Langkah test dalam bahasa sehari-hari |
-| `Step`     | `features/<fitur>/<fitur>.steps.ts` | Penghubung antara langkah dan page    |
-| `Kode`     | `features/<fitur>/<fitur>.page.ts`  | Aksi dan pengecekan di halaman        |
+| Location   | File                                    | What it holds                    |
+| ---------- | --------------------------------------- | -------------------------------- |
+| `Skenario` | `features/<feature>/<feature>.feature`  | Test steps in plain language     |
+| `Step`     | `features/<feature>/<feature>.steps.ts` | The link between steps and pages |
+| `Kode`     | `features/<feature>/<feature>.page.ts`  | Page actions and checks          |
 
-Alasan gagal di baris pertama biasanya sudah menunjukkan bagian mana yang perlu dicek:
+The reason on the first line usually tells you where to look:
 
-| Alasan gagal                                                        | Yang biasanya perlu dicek                                                                                              |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `Teks tidak sesuai`                                                 | Nilai expected di `test-data/<fitur>.json`. Kalau datanya sudah benar, kemungkinan ada perubahan atau bug di aplikasi. |
-| `Jumlah elemen tidak sesuai`                                        | Data test atau perilaku aplikasi, misalnya jumlah baris di tabel.                                                      |
-| `Elemen tidak terlihat di layar, elemen tidak ditemukan di halaman` | Selector di `features/<fitur>/<fitur>.locators.ts`. Biasanya tampilan halaman berubah.                                 |
-| `Elemen tidak muncul setelah ... detik`                             | Selector, atau halaman yang sedang lambat.                                                                             |
-| `Tidak bisa mengklik dalam ... detik`                               | Selector, atau elemen yang tertutup elemen lain seperti popup.                                                         |
-| `Step ini belum punya step definition`                              | Langkah baru di file `.feature` yang belum ada pasangannya di file steps.                                              |
-| `Halaman tidak bisa dibuka (...)`                                   | Koneksi internet atau situs demoqa yang sedang bermasalah.                                                             |
+| Failure reason                                                      | Meaning                                            | What to check                                                                                                  |
+| ------------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `Teks tidak sesuai`                                                 | Text does not match                                | The expected value in `test-data/<feature>.json`. If the data is right, the app probably changed or has a bug. |
+| `Jumlah elemen tidak sesuai`                                        | Element count does not match                       | Test data or app behavior, such as the number of rows in a table.                                              |
+| `Elemen tidak terlihat di layar, elemen tidak ditemukan di halaman` | Element not visible, element not found on the page | The selector in `features/<feature>/<feature>.locators.ts`. Usually the page layout changed.                   |
+| `Elemen tidak muncul setelah ... detik`                             | Element did not appear after ... seconds           | The selector, or a slow page.                                                                                  |
+| `Tidak bisa mengklik dalam ... detik`                               | Could not click within ... seconds                 | The selector, or an element covered by something else, such as a popup.                                        |
+| `Step ini belum punya step definition`                              | This step has no step definition yet               | A new step in the `.feature` file with no match in the steps file.                                             |
+| `Halaman tidak bisa dibuka (...)`                                   | The page could not be opened                       | The internet connection, or demoqa itself being down.                                                          |
 
-Stack trace lengkapnya tetap ada di report HTML (tab Errors & Warnings) dengan path relatif terhadap folder project, jadi bisa dicocokkan langsung dengan file di repo.
+The full stack trace is still in the HTML report (Errors & Warnings tab), with paths relative to the project folder, so it matches the files in the repo.
 
-## Arsitektur dan struktur folder
+## Architecture and folder structure
 
-Setiap lapisan hanya memanggil lapisan di bawahnya:
+Each layer only calls the layer below it:
 
 ```text
 Feature (.feature)
-  └── Step Definition (.steps.ts)    penerjemah tipis dari kalimat ke method page
-        └── Page Object (.page.ts)    aksi dan pengecekan di satu halaman
-              └── Locator (.locators.ts)    semua selector halaman itu
-                    └── Core (src/core/)    UIAction untuk aksi, UIAssert untuk pengecekan
+  └── Step Definition (.steps.ts)    thin translation from a sentence to a page method
+        └── Page Object (.page.ts)    actions and checks for one page
+              └── Locator (.locators.ts)    every selector for that page
+                    └── Core (src/core/)    UIAction for actions, UIAssert for checks
                           └── Playwright → Browser
 ```
 
 ```text
 features/
   web-tables/
-    web-tables.feature      skenario dalam bahasa sehari-hari
-    web-tables.steps.ts     step definition, menghubungkan skenario ke page
-    web-tables.page.ts      aksi di halaman dan pengecekan hasil (verify)
-    web-tables.locators.ts  selector elemen di halaman
-  droppable/                susunan file yang sama
-  resizable/                susunan file yang sama
-  practice-form/            susunan file yang sama
-components/                 modul UI yang dipakai lebih dari satu halaman
+    web-tables.feature      scenarios in plain language
+    web-tables.steps.ts     step definitions, connecting scenarios to the page
+    web-tables.page.ts      page actions and result checks (verify)
+    web-tables.locators.ts  element selectors
+  droppable/                same layout
+  resizable/                same layout
+  practice-form/            same layout
+components/                 UI modules shared by more than one page
 src/
   core/
-    UIAction.ts             semua aksi ke browser: klik, isi, pilih, upload, drag, tunggu
-    UIAssert.ts             semua pengecekan, diulang sampai lolos atau batas waktu habis
+    UIAction.ts             every browser action: click, fill, select, upload, drag, wait
+    UIAssert.ts             every check, retried until it passes or times out
   config/
-    env.ts                  pengaturan dari .env
-    validation.ts           warna merah validasi di demoqa
+    env.ts                  settings from .env
+    validation.ts           demoqa's validation red
   utils/
-    browser.ts              BrowserManager: buka dan tutup browser per skenario
+    browser.ts              BrowserManager: opens and closes a browser per scenario
 support/
-  hooks.ts                  Before/After per skenario: browser, screenshot, video
-  world.ts                  TestWorld: page dan state milik satu skenario
-test-data/                  data test per halaman dalam JSON, plus foto untuk upload
-reports/                    hasil run, report HTML, screenshot, dan video
-tools/                      report HTML, command suite, dan extension VS Code
-docs/                       halaman ringkasan project dan gambar untuk README
-test-suites.json            daftar Test Suite
+  hooks.ts                  Before/After per scenario: browser, screenshots, video
+  world.ts                  TestWorld: the page and state of one scenario
+test-data/                  test data per page as JSON, plus a photo for upload
+reports/                    run results, HTML report, screenshots, and video
+tools/                      HTML report, suite command, and VS Code extension
+docs/                       project overview page and README images
+test-suites.json            Test Suite list
 ```
 
-Semua file untuk satu halaman ada di satu folder. Data test-nya ada di `test-data/` dengan nama yang sama, misalnya `test-data/web-tables.json`.
+All files for one page live in one folder. Its test data lives in `test-data/` under the same name, for example `test-data/web-tables.json`.
 
-File `.feature` hanya berisi langkah dalam bahasa sehari-hari. Nilai yang diisi dan hasil yang diharapkan ada di file JSON, dan pengecekannya ada di method `verify...` di file page. Untuk menambah atau mengganti data, cukup ubah file JSON-nya.
+Feature files only hold steps in plain language. Input values and expected results are in JSON, and the checks are the `verify...` methods in the page object. To add or change data, edit the JSON file.
 
-### Aturan menulis test
+### Rules for writing tests
 
-- Step definition hanya memanggil method di page object. Tidak ada selector, pengecekan, atau urusan browser di file steps.
-- Semua selector ada di file `.locators.ts` milik halamannya.
-- Semua aksi ke browser lewat `UIAction`, semua pengecekan lewat `UIAssert`. Page object tidak memanggil Playwright atau `expect` langsung.
-- Method `UIAction` dan `UIAssert` adalah `static async`, jadi setiap panggilan wajib pakai `await`. Tanpa `await`, step selesai sebelum aksinya jalan dan errornya muncul di step lain.
-- Menunggu selalu berdasarkan kondisi (elemen muncul, hilang, teks berubah). Tidak ada `waitForTimeout` atau jeda tetap.
-- Navigasi halaman ada di page object, browser dibuka dan ditutup di `BrowserManager`, dan siklus skenario ada di `support/hooks.ts`.
-- Urutan pilihan selector: `data-testid`, role dan nama yang terlihat, `id` yang stabil, kombinasi atribut yang stabil, lalu XPath kalau tidak ada pilihan lain.
-- Perilaku yang dites mengikuti yang benar-benar ada di halaman demoqa. Selector, teks, dan URL tidak dikarang.
-- Perbaikan dilakukan di lapisan paling sempit yang bertanggung jawab: selector salah diperbaiki di locators, data salah di `test-data/`.
+- Step definitions only call page object methods. No selectors, checks, or browser handling in step files.
+- Every selector lives in the `.locators.ts` file of its page.
+- Every browser action goes through `UIAction` and every check through `UIAssert`. Page objects never call Playwright or `expect` directly.
+- `UIAction` and `UIAssert` methods are `static async`, so every call needs `await`. Without it, the step finishes before the action runs and the error shows up in a different step.
+- Waiting is always based on a condition (an element appears, disappears, or its text changes). No `waitForTimeout` or fixed sleeps.
+- Page navigation lives in the page object, the browser opens and closes in `BrowserManager`, and the scenario lifecycle lives in `support/hooks.ts`.
+- Selector priority: `data-testid`, role and visible name, a stable `id`, a stable attribute combination, then XPath only when nothing else works.
+- Tests follow what the demoqa pages actually do. Selectors, text, and URLs are never invented.
+- Fix problems in the narrowest layer responsible: a wrong selector in the locators file, wrong data in `test-data/`.
 
-### Method di `src/core/`
+### Methods in `src/core/`
 
 `UIAction`:
 
-| Kelompok      | Method                                                                  |
+| Group         | Methods                                                                 |
 | ------------- | ----------------------------------------------------------------------- |
-| Navigasi      | `goto`                                                                  |
+| Navigation    | `goto`                                                                  |
 | Mouse         | `click`, `doubleClick`, `hover`, `dragTo`, `dragBy`                     |
-| Teks          | `inputText`, `clearText`, `fill`, `clear`, `type`, `press`              |
+| Text          | `inputText`, `clearText`, `fill`, `clear`, `type`, `press`              |
 | Form          | `check`, `uncheck`, `selectOption`, `uploadFile`                        |
-| Fokus, scroll | `focus`, `blur`, `scrollIntoView`                                       |
-| Menunggu      | `waitForAttached`, `waitForVisible`, `waitForHidden`, `waitForDetached` |
+| Focus, scroll | `focus`, `blur`, `scrollIntoView`                                       |
+| Wait          | `waitForAttached`, `waitForVisible`, `waitForHidden`, `waitForDetached` |
 
-`UIAssert` mengulang pengecekan setiap 100 ms sampai lolos atau 5 detik habis. Kalau tetap gagal, pesannya berisi apa yang seharusnya terjadi dan hasil percobaan terakhir, lalu terminal menerjemahkannya jadi alasan gagal dalam kalimat biasa.
+`UIAssert` retries a check every 100 ms until it passes or 5 seconds run out. If it still fails, the message says what should have held and what the last attempt saw, and the terminal turns that into a plain-language reason.
 
-| Kelompok   | Method                                                                                                |
-| ---------- | ----------------------------------------------------------------------------------------------------- |
-| Terlihat   | `visible`, `hidden`                                                                                   |
-| Ada di DOM | `attached`, `detached`, `count`                                                                       |
-| Isi        | `text`, `texts`, `containsText`, `notContainsText`, `value`, `attribute`, `className`, `notClassName` |
-| Tampilan   | `css`, `size`                                                                                         |
-| Status     | `enabled`, `disabled`, `checked`, `unchecked`                                                         |
-| Navigasi   | `urlContains`                                                                                         |
+| Group        | Methods                                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| Visibility   | `visible`, `hidden`                                                                                   |
+| DOM presence | `attached`, `detached`, `count`                                                                       |
+| Content      | `text`, `texts`, `containsText`, `notContainsText`, `value`, `attribute`, `className`, `notClassName` |
+| Appearance   | `css`, `size`                                                                                         |
+| State        | `enabled`, `disabled`, `checked`, `unchecked`                                                         |
+| Navigation   | `urlContains`                                                                                         |
 
-## Pengaturan
+## Settings
 
-Pengaturan dibaca dari file `.env`. Semuanya punya isi awal, jadi test tetap jalan tanpa file itu. Untuk mengubahnya, salin `.env.example` jadi `.env`, lalu ubah nilainya:
+Settings are read from a `.env` file. Every setting has a default, so tests run without that file. To change one, copy `.env.example` to `.env` and edit the value:
 
-| Pengaturan            | Isi awal             | Keterangan                                                                                      |
-| --------------------- | -------------------- | ----------------------------------------------------------------------------------------------- |
-| `BASE_URL`            | `https://demoqa.com` | Alamat situs yang dites                                                                         |
-| `BROWSER`             | `chromium`           | Bisa juga `firefox` atau `webkit` (install dulu dengan `npx playwright install firefox webkit`) |
-| `HEADLESS`            | `true`               | `false` untuk menampilkan browser                                                               |
-| `DEFAULT_TIMEOUT`     | `15000`              | Batas waktu menunggu elemen, dalam milidetik                                                    |
-| `STEP_SCREENSHOT`     | `expected`           | `expected`: screenshot di setiap pengecekan, `true`: semua step, `false`: hanya saat gagal      |
-| `REPORT_OPEN`         | `true`               | `false` supaya report tidak dibuka otomatis                                                     |
-| `IGNORE_HTTPS_ERRORS` | `false`              | `true` untuk situs dengan sertifikat HTTPS yang tidak valid                                     |
-| `RECORD_VIDEO`        | `false`              | `true` untuk merekam video setiap skenario ke `reports/videos/`                                 |
+| Setting               | Default              | What it does                                                                                         |
+| --------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `BASE_URL`            | `https://demoqa.com` | The site under test                                                                                  |
+| `BROWSER`             | `chromium`           | Also accepts `firefox` or `webkit` (install them first with `npx playwright install firefox webkit`) |
+| `HEADLESS`            | `true`               | `false` to show the browser                                                                          |
+| `DEFAULT_TIMEOUT`     | `15000`              | How long to wait for an element, in milliseconds                                                     |
+| `STEP_SCREENSHOT`     | `expected`           | `expected`: a screenshot at every check, `true`: every step, `false`: only on failure                |
+| `REPORT_OPEN`         | `true`               | `false` to stop the report from opening automatically                                                |
+| `IGNORE_HTTPS_ERRORS` | `false`              | `true` for sites with an invalid HTTPS certificate                                                   |
+| `RECORD_VIDEO`        | `false`              | `true` to record a video of every scenario to `reports/videos/`                                      |
 
-## Extension VS Code (opsional)
+## VS Code extension (optional)
 
-Semua hal di atas bisa dijalankan dari terminal. Extension ini hanya pilihan tambahan untuk yang lebih suka klik: menjalankan test dari panel Testing di VS Code, melihat status setiap test case, dan mengatur Test Suite (membuat, mencentang, menyeret urutan). Suite yang dibuat di extension tersimpan di `test-suites.json` yang sama, jadi bisa dijalankan dari terminal juga. Cara pasang:
+Everything above runs from a terminal. The extension is an extra for people who prefer clicking: run tests from the VS Code Testing panel, see the status of every test case, and manage Test Suites (create, check, drag to reorder). Suites made in the extension are saved to the same `test-suites.json`, so they also run from the terminal. To install:
 
 ```bash
 code --install-extension tools/vscode-extension/demoqa-tests.vsix
 ```
 
-Panduan lengkapnya ada di [tools/vscode-extension/README.md](tools/vscode-extension/README.md).
+The full guide is in [tools/vscode-extension/README.md](tools/vscode-extension/README.md).
