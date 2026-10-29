@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-import { env } from '../../tests/support/env.ts';
+import { env } from '../../src/config/env.ts';
 import { RUN_INFO_FILE } from './paths.ts';
 
 export interface RunInfo {

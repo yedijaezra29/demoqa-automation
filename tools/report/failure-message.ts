@@ -48,6 +48,32 @@ const LOCATOR_KIND: Record<string, string> = {
   TestId: 'test id',
 };
 
+const UI_ASSERT_PHRASE: [RegExp, string][] = [
+  [/ should display [["]/, 'Teks tidak sesuai'],
+  [/ should contain text "/, 'Teks tidak memuat yang diharapkan'],
+  [/ should not contain "/, 'Teks memuat yang seharusnya tidak ada'],
+  [/ should have value "/, 'Isi field tidak sesuai'],
+  [/ should have \d+ element\(s\)$/, 'Jumlah elemen tidak sesuai'],
+  [/ should have CSS /, 'Nilai CSS tidak sesuai'],
+  [/ should have class "/, 'Class elemen tidak sesuai'],
+  [/ should not have class "/, 'Class elemen masih ada, seharusnya tidak'],
+  [/ should have [\w-]+="/, 'Atribut elemen tidak sesuai'],
+  [/ should be \d+ × \d+ px$/, 'Ukuran elemen tidak sesuai'],
+  [/ should be visible$/, 'Elemen tidak terlihat di layar'],
+  [/ should be hidden$/, 'Elemen masih terlihat, seharusnya tidak ada'],
+  [/ should be attached to the DOM$/, 'Elemen tidak ada di halaman'],
+  [/ should be detached from the DOM$/, 'Elemen masih ada di halaman'],
+  [/ should be enabled$/, 'Elemen nonaktif, seharusnya bisa dipakai'],
+  [/ should be disabled$/, 'Elemen masih aktif, seharusnya nonaktif'],
+  [/ should be checked$/, 'Elemen belum dicentang'],
+  [/ should be unchecked$/, 'Elemen masih dicentang'],
+  [/^URL pathname should end with /, 'URL halaman tidak sesuai'],
+];
+
+// Format from src/core/UIAssert.ts: "<what should hold> | last attempt: <detail> | attempts: ...".
+const UI_ASSERT =
+  /^(.*?) \| last attempt: ([\s\S]*) \| attempts: \d+, elapsed: \d+ms, timeout: \d+ms\s*$/;
+
 const MAX_VALUE_LENGTH = 160;
 
 export function reasons(message: string | undefined): string[] {
@@ -64,9 +90,86 @@ export function reasons(message: string | undefined): string[] {
     .trim();
 
   return (
+    uiAssertReasons([head, ...body.slice(1)].join('\n').replace(/\n+$/, '')) ??
     expectReasons(head, body) ??
     timeoutReasons(head, body) ?? [shorten(head || 'Gagal tanpa pesan error')]
   );
+}
+
+function uiAssertReasons(message: string): string[] | undefined {
+  const match = UI_ASSERT.exec(message);
+  if (!match) {
+    return undefined;
+  }
+
+  const [, claim, detail] = match;
+  const phrase =
+    UI_ASSERT_PHRASE.find(([pattern]) => pattern.test(claim))?.[1] ??
+    shorten(claim);
+  const element = claim.startsWith('URL ')
+    ? undefined
+    : claim.split(' should ')[0];
+  const found: string[] = [];
+
+  if (/Timeout \d+ms exceeded|element\(s\) not found/.test(detail)) {
+    found.push(`${phrase}, elemen tidak ditemukan di halaman`);
+  } else {
+    found.push(phrase);
+    const values =
+      /^Expected (?:text to contain |pathname to end with )?([\s\S]+?), received ([\s\S]+)$/.exec(
+        detail,
+      );
+    if (values) {
+      for (const [want, got] of valuePairs(values[1], values[2])) {
+        found.push(`Seharusnya: ${shorten(want)}`, `Tertulis: ${shorten(got)}`);
+      }
+    }
+  }
+
+  if (element) {
+    found.push(`Elemen: ${element}`);
+  }
+  return found;
+}
+
+// For UIAssert.texts, show only the cells that differ instead of the whole row.
+function valuePairs(want: string, got: string): [string, string][] {
+  const expected = parseList(want);
+  const received = parseList(got);
+  if (!expected || !received) {
+    return [[want, got]];
+  }
+
+  const pairs: [string, string][] = [];
+  for (
+    let index = 0;
+    index < Math.max(expected.length, received.length);
+    index++
+  ) {
+    if (expected[index] !== received[index]) {
+      pairs.push([
+        quote(expected[index]) ?? '(tidak ada)',
+        quote(received[index]) ?? '(tidak ada)',
+      ]);
+    }
+  }
+  return pairs.length ? pairs : [[want, got]];
+}
+
+function parseList(text: string): string[] | undefined {
+  if (!text.startsWith('[')) {
+    return undefined;
+  }
+  try {
+    const value: unknown = JSON.parse(text);
+    return Array.isArray(value) ? value.map(String) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function quote(value: string | undefined): string | undefined {
+  return value === undefined ? undefined : JSON.stringify(value);
 }
 
 function expectReasons(head: string, body: string[]): string[] | undefined {

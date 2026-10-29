@@ -1,6 +1,6 @@
 export default {
-  paths: ['tests/**/*.feature'],
-  import: ['tests/support/**/*.ts', 'tests/**/*.steps.ts'],
+  paths: ['features/**/*.feature'],
+  import: ['support/**/*.ts', 'features/**/*.steps.ts'],
   tags: process.env.TAGS ?? '',
   format: [
     './tools/report/progress-formatter.ts',

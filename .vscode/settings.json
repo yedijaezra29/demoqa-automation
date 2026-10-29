@@ -1,6 +1,6 @@
 {
-  "cucumber.features": ["tests/**/*.feature"],
-  "cucumber.glue": ["tests/**/*.steps.ts", "tests/support/**/*.ts"],
+  "cucumber.features": ["features/**/*.feature"],
+  "cucumber.glue": ["features/**/*.steps.ts", "support/**/*.ts"],
   "files.exclude": {
     "**/node_modules/@cucumber/html-formatter/playwright.config.ts": true
   }

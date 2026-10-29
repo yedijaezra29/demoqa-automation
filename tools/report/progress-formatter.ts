@@ -442,7 +442,12 @@ export default class ProgressFormatter extends Formatter {
         continue;
       }
       const file = this.path(frame[1]);
-      if (!file.startsWith('.') && !file.includes('node_modules')) {
+      // Skip the shared core layer so Kode points at the page object that made the call.
+      if (
+        !file.startsWith('.') &&
+        !file.includes('node_modules') &&
+        !file.startsWith('src/core/')
+      ) {
         return `${file}:${frame[2]}`;
       }
     }

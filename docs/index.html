@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>demoqa Automation · yedijaezra</title>
+<meta name="description" content="28 automated test scenarios for demoqa.com with Playwright, TypeScript, and Cucumber, plus a custom terminal output and HTML report.">
+<script>
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (e) {}
+    if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* Grey-blue page and navy ink come from the project's HTML report. Red only marks failures, green only marks passes. */
+  :root {
+    --paper: #eef0f5;
+    --paper-2: #f8f9fb;
+    --ink: #13204a;
+    --ink-2: #4a5163;
+    --muted: #5a6174;
+    --line: #d5d9e2;
+    --control: #7a8194;
+    --accent: #b42318;
+    --accent-tint: rgba(180, 35, 24, 0.09);
+    --pass: #1e6b35;
+    --focus: #1d4ed8;
+    --term-bg: #0c0f16;
+    --term-line: #0c0f16;
+    --term-fg: #e3e6ed;
+    --term-dim: #8e96a8;
+    --term-green: #5bcf77;
+    --term-red: #ff7b72;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #11141c;
+      --paper-2: #171b25;
+      --ink: #ece9e2;
+      --ink-2: #b3b8c6;
+      --muted: #9aa0b0;
+      --line: #2a3142;
+      --control: #646d84;
+      --accent: #ff8f85;
+      --accent-tint: rgba(255, 143, 133, 0.13);
+      --pass: #6fd08a;
+      --focus: #8ab4ff;
+      --term-bg: #080a10;
+      --term-line: #2a3142;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #11141c;
+    --paper-2: #171b25;
+    --ink: #ece9e2;
+    --ink-2: #b3b8c6;
+    --muted: #9aa0b0;
+    --line: #2a3142;
+    --control: #646d84;
+    --accent: #ff8f85;
+    --accent-tint: rgba(255, 143, 133, 0.13);
+    --pass: #6fd08a;
+    --focus: #8ab4ff;
+    --term-bg: #080a10;
+    --term-line: #2a3142;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 17px/1.65 "IBM Plex Sans", system-ui, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  code, pre, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  p code, li code, td code, dd code {
+    font-size: 0.86em;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    padding: 0.05em 0.35em;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  /* Grid items default to min-width: auto, so long code lines would widen the page on phones. */
+  .hero-grid > *, .compare > *, .anatomy > *, .report-grid > *, .pair > *,
+  .structure > *, .extras > *, .run > *, .cmds > *, .report-tabs > *,
+  .cover > li > *, .cover dl > * { min-width: 0; }
+  @media (min-width: 640px) { .wrap { padding: 0 32px; } }
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 12px; z-index: 30; background: var(--paper); padding: 10px 14px; }
+
+  .top {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .top .wrap { display: flex; align-items: center; gap: 12px; min-height: 64px; }
+  .brand { font-weight: 600; text-decoration: none; margin-right: auto; display: flex; flex-direction: column; justify-content: center; min-height: 44px; line-height: 1.2; }
+  .brand small { font-weight: 400; color: var(--muted); font-size: 13px; }
+  .nav { display: none; gap: 4px; }
+  .nav a, .ghost {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px;
+    text-decoration: none; border-radius: 6px; font-size: 15px; color: var(--ink-2);
+  }
+  .nav a:hover, .ghost:hover { color: var(--ink); background: var(--paper-2); }
+  .ghost { background: none; border: 1px solid var(--control); font: inherit; font-size: 15px; cursor: pointer; color: var(--ink); }
+  .menu-btn[aria-expanded="true"] { background: var(--paper-2); }
+  .mobile-nav { border-top: 1px solid var(--line); }
+  .mobile-nav[hidden] { display: none; }
+  .mobile-nav ul { list-style: none; margin: 0; padding: 8px 0 12px; }
+  .mobile-nav a { display: flex; align-items: center; min-height: 48px; text-decoration: none; font-size: 17px; }
+  @media (min-width: 900px) {
+    .nav { display: flex; }
+    .menu-btn, .mobile-nav { display: none !important; }
+  }
+
+  /* padding-block only, so .wrap keeps its side gutter. Condensed Plex: the engineering family the body text uses, set tight for headlines. */
+  .hero { padding-block: 48px 40px; }
+  .hero h1 {
+    font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif; font-weight: 700;
+    font-size: clamp(36px, 6.6vw, 72px); line-height: 1.02; letter-spacing: -0.01em;
+    margin: 0 0 24px; max-width: 16ch; text-wrap: balance;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 19px; color: var(--ink-2); max-width: 60ch; margin: 0 0 28px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; }
+  .btn {
+    display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px;
+    border-radius: 8px; text-decoration: none; font-weight: 500;
+    border: 1px solid var(--ink);
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+  .btn-secondary:hover { background: var(--paper-2); }
+  .summary {
+    font-family: "IBM Plex Mono", monospace; font-size: 15px; line-height: 1.7;
+    border-top: 1px solid var(--line); padding-top: 20px; margin: 0;
+    display: grid; gap: 4px;
+  }
+  .summary .ok { color: var(--pass); font-weight: 600; }
+  .summary .ng { color: var(--accent); font-weight: 600; }
+  .summary .dim { color: var(--muted); }
+  @media (min-width: 1024px) {
+    .hero { padding-block: 88px 64px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 64px; align-items: end; }
+    .summary { border-top: 0; border-left: 1px solid var(--line); padding: 0 0 0 24px; }
+  }
+
+  /* The [n/6] labels mirror the progress lines in the custom terminal output. */
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  @media (min-width: 1024px) { section { padding: 96px 0; } }
+  .step { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+  .step b { color: var(--ink); font-weight: 600; }
+  h2 {
+    font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif; font-weight: 700;
+    font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; letter-spacing: -0.005em;
+    margin: 0 0 16px; max-width: 24ch; text-wrap: balance;
+  }
+  h3 { font-size: 19px; font-weight: 600; margin: 0 0 8px; line-height: 1.35; }
+  .intro { color: var(--ink-2); max-width: 62ch; margin: 0 0 36px; }
+  .intro + .intro { margin-top: -20px; }
+
+  .term-label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 10px; }
+  .term-label h3 { margin: 0; }
+  .term-label .note { color: var(--muted); font-size: 14px; }
+  .term-label.custom h3 { color: var(--accent); }
+  .term {
+    margin: 0; background: var(--term-bg); color: var(--term-fg);
+    border: 1px solid var(--term-line); border-radius: 10px;
+    padding: 16px; font-size: 12.5px; line-height: 1.6;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  @media (min-width: 640px) { .term { padding: 22px 24px; font-size: 13.5px; } }
+  .term .d { color: var(--term-dim); }
+  .term .g { color: var(--term-green); }
+  .term .r { color: var(--term-red); }
+  .term b { color: #fff; font-weight: 600; }
+  .term .rule { display: block; border-top: 1px solid var(--term-dim); width: min(100%, 52ch); margin: 14px 0 12px; height: 0; }
+  .term-more { color: var(--muted); font-size: 14px; margin: 10px 0 0; }
+  .compare { display: grid; gap: 40px; }
+  .diff { margin: 16px 0 0; padding-left: 20px; color: var(--ink-2); }
+  .diff li { margin-bottom: 6px; }
+  @media (min-width: 1024px) {
+    .compare { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 32px; align-items: start; }
+  }
+
+  .anatomy { display: grid; gap: 32px; }
+  @media (min-width: 1024px) { .anatomy { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; } }
+  .read-order { margin: 0; padding: 0; list-style: none; counter-reset: r; }
+  .read-order li { counter-increment: r; position: relative; padding: 0 0 18px 40px; color: var(--ink-2); }
+  .read-order li::before {
+    content: counter(r); position: absolute; left: 0; top: 1px;
+    width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 50%;
+    display: grid; place-items: center; font: 600 13px/1 "IBM Plex Mono", monospace; color: var(--ink);
+  }
+  .read-order strong { color: var(--ink); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tab {
+    font: inherit; font-size: 15px; cursor: pointer; text-align: left;
+    background: transparent; color: var(--ink-2);
+    border: 1px solid var(--control); border-radius: 8px;
+    min-height: 48px; padding: 6px 14px; display: flex; flex-direction: column; justify-content: center; line-height: 1.25;
+  }
+  .tab small { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--muted); }
+  .tab:hover { background: var(--paper-2); color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .tab[aria-selected="true"] small { color: var(--paper); opacity: 0.85; }
+  .code {
+    background: var(--paper-2); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .code-head {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px;
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    font: 13px/1.5 "IBM Plex Mono", monospace; color: var(--muted);
+  }
+  .code-head b { color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
+  .code pre {
+    margin: 0; padding: 12px 0; font-size: 13px; line-height: 1.7;
+    overflow-x: auto;
+  }
+  .code .ln { display: block; padding: 0 16px 0 0; white-space: pre; }
+  .code .ln::before {
+    content: attr(data-n); display: inline-block; width: 3.2em; padding-right: 1em;
+    text-align: right; color: var(--muted); user-select: none;
+  }
+  .code .ln.hit { background: var(--accent-tint); box-shadow: inset 3px 0 0 var(--accent); }
+  .code .ln.hit::before { color: var(--accent); font-weight: 600; }
+  .code-note { padding: 14px 16px 16px; border-top: 1px solid var(--line); color: var(--ink-2); margin: 0; font-size: 16px; }
+  .reasons { margin-top: 56px; }
+  .reasons table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .reasons th, .reasons td { text-align: left; vertical-align: top; padding: 14px 12px 14px 0; border-bottom: 1px solid var(--line); }
+  .reasons th { font-size: 14px; font-weight: 600; color: var(--muted); }
+  .reasons td:first-child { width: 42%; }
+  .reasons td:first-child code { white-space: normal; }
+  .gloss { display: block; color: var(--muted); font-size: 14px; margin-top: 4px; }
+  @media (max-width: 719px) {
+    .reasons thead { position: absolute; left: -9999px; }
+    .reasons tr { display: block; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .reasons td { display: block; width: auto !important; border: 0; padding: 2px 0; }
+    .reasons td:last-child { color: var(--ink-2); margin-top: 6px; }
+  }
+
+  figure { margin: 0; }
+  .shot {
+    border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--paper-2);
+  }
+  .shot-lead { box-shadow: 0 18px 40px -24px rgba(20, 28, 46, 0.45); } /* the only elevation: the main screenshot */
+  figcaption { color: var(--muted); font-size: 14px; margin-top: 10px; }
+  .img-fail { padding: 32px 16px; color: var(--ink-2); font-size: 15px; margin: 0; }
+  .report-grid { display: grid; gap: 32px; margin-top: 40px; }
+  .report-tabs { margin: 0; display: grid; gap: 16px; }
+  .report-tabs dt { font-weight: 600; }
+  .report-tabs dd { margin: 2px 0 0; color: var(--ink-2); }
+  .pair { display: grid; gap: 32px; margin-top: 48px; }
+  @media (min-width: 900px) {
+    .report-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 48px; margin-top: 0; }
+    .pair { grid-template-columns: 1fr 1fr; }
+  }
+
+  .cover { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+  .cover > li { display: grid; gap: 12px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+  .cover h3 { font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif; font-size: 26px; font-weight: 600; margin: 0; }
+  .cover .tc { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+  .cover .tc a { color: var(--muted); }
+  .bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 10px 0 0; max-width: 220px; background: var(--line); }
+  .bar span:first-child { background: var(--pass); }
+  .bar span:last-child { background: var(--accent); }
+  .cover dl { margin: 0; display: grid; gap: 12px; }
+  .cover dt { font-size: 14px; font-weight: 600; }
+  .cover dt.ok { color: var(--pass); }
+  .cover dt.ng { color: var(--accent); }
+  .cover dd { margin: 2px 0 0; color: var(--ink-2); }
+  @media (min-width: 900px) {
+    .cover > li { grid-template-columns: 260px minmax(0, 1fr); gap: 32px; }
+    .cover dl { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+
+  .structure { display: grid; gap: 40px; }
+  @media (min-width: 1024px) { .structure { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 64px; } }
+  .tree {
+    margin: 0; padding: 20px; font-size: 13.5px; line-height: 1.7; border-radius: 10px;
+    background: var(--paper-2); border: 1px solid var(--line); overflow-x: auto;
+  }
+  .tree .d { color: var(--muted); }
+  .layers { margin: 0; padding: 0; list-style: none; }
+  .layers li { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .layers li:first-child { padding-top: 0; }
+  .layers code { font-size: 14px; }
+  .layers p { margin: 4px 0 0; color: var(--ink-2); }
+  .extras { display: grid; gap: 24px; margin-top: 48px; }
+  .extras p { margin: 0; color: var(--ink-2); }
+  @media (min-width: 900px) { .extras { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
+
+  .run { display: grid; gap: 40px; }
+  @media (min-width: 1024px) { .run { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 64px; } }
+  .cmds { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .cmds p { margin: 0 0 6px; color: var(--ink-2); font-size: 15px; }
+  .cmd {
+    display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--term-bg); overflow: hidden;
+  }
+  .cmd code {
+    flex: 1; min-width: 0; padding: 12px 14px; color: var(--term-fg); font-size: 14px;
+    background: none; border: 0; border-radius: 0;
+    overflow-x: auto; white-space: pre; display: flex; align-items: center;
+  }
+  .cmd code::before { content: "$ "; color: var(--term-dim); white-space: pre; }
+  .copy {
+    flex: none; min-width: 84px; min-height: 48px; border: 0; border-left: 1px solid #646d84;
+    background: #151a25; color: var(--term-fg); font: 500 14px "IBM Plex Sans", sans-serif; cursor: pointer;
+  }
+  .copy:hover { background: #1f2635; }
+  .copy[data-state="done"] { color: var(--term-green); }
+  .copy[data-state="error"] { color: var(--term-red); }
+  .env { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .env th, .env td { text-align: left; vertical-align: top; padding: 10px 10px 10px 0; border-bottom: 1px solid var(--line); }
+  .env th { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .env td:last-child { color: var(--ink-2); }
+  @media (max-width: 559px) {
+    .env thead { position: absolute; left: -9999px; }
+    .env tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .env td { display: block; border: 0; padding: 2px 0; }
+  }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 15px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer a { color: var(--ink); overflow-wrap: anywhere; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#content">yedijaezra<small>QA Automation · demoqa.com</small></a>
+    <nav class="nav" aria-label="Page sections">
+      <a href="#terminal">Terminal</a>
+      <a href="#failures">Failures</a>
+      <a href="#report">Report</a>
+      <a href="#coverage">Coverage</a>
+      <a href="#run">Run it</a>
+    </nav>
+    <button class="ghost theme-btn" type="button" aria-pressed="false">Dark</button>
+    <button class="ghost menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Page sections" hidden>
+    <div class="wrap">
+      <ul>
+        <li><a href="#terminal">Terminal</a></li>
+        <li><a href="#failures">Failures</a></li>
+        <li><a href="#report">Report</a></li>
+        <li><a href="#coverage">Coverage</a></li>
+        <li><a href="#structure">Structure</a></li>
+        <li><a href="#run">Run it</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main id="content">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <h1>When a test fails, you see <em>why and where</em> right away.</h1>
+        <p class="lede">I wrote automated tests for four pages of <a href="https://demoqa.com">demoqa.com</a> with Playwright, TypeScript, and Cucumber, using the Page Object Model. I also built the terminal output and the HTML report myself, because Cucumber's defaults are hardest to read exactly when something fails.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://github.com/yedijaezra29/demoqa-automation">View the repo on GitHub</a>
+          <a class="btn btn-secondary" href="#terminal">Compare terminal output</a>
+        </div>
+      </div>
+      <p class="summary" aria-label="Project summary">
+        <span>Coverage: <b>28</b> scenarios on <b>4</b> pages.</span>
+        <span><span class="ok">11 positive</span>, <span class="ng">17 negative</span></span>
+        <span class="dim">Playwright 1.63 · Cucumber 12.9</span>
+        <span class="dim">TypeScript · Node.js 20.12+</span>
+        <span class="dim">Single-file HTML report, PDF export</span>
+      </p>
+    </div>
+  </div>
+
+  <section id="terminal" aria-labelledby="t-terminal">
+    <div class="wrap">
+      <p class="step"><b>[1/6]</b> Terminal</p>
+      <h2 id="t-terminal">The same failure, reported two ways</h2>
+      <p class="intro">Both outputs come from one run: five Student Registration Form test cases, with FORM-01 failing on purpose (I changed the expected Gender in the test data to "Female").</p>
+      <p class="intro">The project is written in Indonesian, so the custom output is too. <i>Seharusnya</i> is the expected value, <i>Tertulis</i> is what the page shows, <i>Skenario</i> and <i>Kode</i> are the scenario and code locations, and <i>dtk</i> means seconds.</p>
+
+      <div class="compare">
+        <div>
+          <div class="term-label"><h3>Cucumber default</h3><span class="note">full output</span></div>
+<pre class="term" aria-label="Default Cucumber terminal output"><span class="g">....</span><span class="r">F</span><span class="g">.........................</span>
+
+Failures:
+
+1) Scenario: Mengisi semua field lalu submit <span class="d"># features/practice-form/practice-form.feature:8</span>
+   <span class="g">✔ Before (Buka browser)</span> <span class="d"># support/hooks.ts:29</span>
+   <span class="g">✔ Given user membuka halaman Student Registration Form</span> <span class="d"># features/practice-form/practice-form.steps.ts:10</span>
+   <span class="g">✔ When user mengisi semua field dengan data student</span> <span class="d"># features/practice-form/practice-form.steps.ts:17</span>
+       Attachment (text/x.cucumber.log+plain)
+   <span class="g">✔ And user menekan tombol Submit</span> <span class="d"># features/practice-form/practice-form.steps.ts:58</span>
+   <span class="r">✖ Then popup konfirmasi menampilkan semua data student</span> <span class="d"># features/practice-form/practice-form.steps.ts:72</span>
+<span class="r">       Error: Nilai Gender di popup konfirmasi should display "Female" | last attempt: Expected "Female", received "Male" | attempts: 47, elapsed: 5003ms, timeout: 5000ms</span>
+<span class="d">           at UIAssert.poll (~/demoqa-automation/src/core/UIAssert.ts:43:11)
+           at async UIAssert.text (~/demoqa-automation/src/core/UIAssert.ts:151:5)
+           at async PracticeFormPage.verifyConfirmation (~/demoqa-automation/features/practice-form/practice-form.page.ts:94:7)
+           at async TestWorld.&lt;anonymous&gt; (~/demoqa-automation/features/practice-form/practice-form.steps.ts:75:5)</span>
+   <span class="g">✔ After (Tutup browser)</span> <span class="d"># support/hooks.ts:54</span>
+       Attachment (image/png): Gagal
+
+5 scenarios (1 failed, 4 passed)
+20 steps (1 failed, 19 passed)
+0m21.145s (executing steps: 0m21.133s)</pre>
+          <p class="term-more">The home folder in the stack trace is shortened to <code>~</code>.</p>
+          <ul class="diff">
+            <li>While tests run you only see dots, with no test case names.</li>
+            <li>The reason is one long English line with retry counters, and the stack trace starts inside the core layer instead of at the check that failed.</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="term-label custom"><h3>Custom</h3><span class="note">full output</span></div>
+<pre class="term" aria-label="Custom terminal output"><span class="r">✘</span> <span class="d">[1/5]</span> <b>FORM-01</b>  Mengisi semua field lalu submit  <span class="d">8,9 dtk</span>
+  <span class="g">✔</span> <span class="d">Given</span> user membuka halaman Student Registration Form  <span class="d">2,5 dtk</span>
+  <span class="g">✔</span> <span class="d">When</span> user mengisi semua field dengan data student  <span class="d">1,0 dtk</span>
+  <span class="g">✔</span> <span class="d">And</span> user menekan tombol Submit  <span class="d">0,0 dtk</span>
+  <span class="r">✘ Then popup konfirmasi menampilkan semua data student</span>  <span class="d">5,2 dtk</span>
+      <span class="r">Teks tidak sesuai</span>
+      Seharusnya: <span class="g">"Female"</span>
+      Tertulis:   <span class="r">"Male"</span>
+      Elemen:     <span class="d">Nilai Gender di popup konfirmasi</span>
+      Skenario:   <span class="d">features/practice-form/practice-form.feature:11</span>
+      Kode:       <span class="d">features/practice-form/practice-form.page.ts:94</span>
+      Step:       <span class="d">features/practice-form/practice-form.steps.ts:72</span>
+<span class="g">✔</span> <span class="d">[2/5]</span> <b>FORM-02</b>  Mengisi field wajib saja sudah cukup untuk submit  <span class="d">3,0 dtk</span>
+<span class="g">✔</span> <span class="d">[3/5]</span> <b>FORM-04</b>  Form menolak First Name kosong  <span class="d">3,0 dtk</span>
+<span class="g">✔</span> <span class="d">[4/5]</span> <b>FORM-06</b>  Form menolak Mobile kurang dari 10 digit  <span class="d">3,5 dtk</span>
+<span class="g">✔</span> <span class="d">[5/5]</span> <b>FORM-09</b>  Form menolak Gender tidak dipilih  <span class="d">2,7 dtk</span>
+<span class="rule"></span>Selesai: 5 skenario dalam 0 mnt 21 dtk. <span class="g">4 LOLOS</span>, <span class="r">1 GAGAL</span>
+
+Yang perlu dicek:
+  <span class="r">✘</span> <b>FORM-01</b>  Mengisi semua field lalu submit
+      <span class="d">features/practice-form/practice-form.feature:8</span></pre>
+          <ul class="diff">
+            <li>One line per test case, with its TC number and duration.</li>
+            <li>A failed test case lists all of its steps, the reason in plain words, and the expected value next to what the page actually shows.</li>
+            <li>Kode skips the core layer and points at the page object line that made the check.</li>
+            <li>Three locations you can cmd+click in the VS Code terminal, then a summary and a list of tests to check.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="failures" aria-labelledby="t-failures">
+    <div class="wrap">
+      <p class="step"><b>[2/6]</b> Failures</p>
+      <h2 id="t-failures">From one red line to the file you need to open</h2>
+      <p class="intro">I wrote the failure messages so that whoever maintains this suite knows which file to open without asking me. Each location in the message points to one layer of the code.</p>
+
+      <div class="anatomy">
+        <ol class="read-order">
+          <li><strong>Find the step marked ✘.</strong> The first three steps passed. The popup check is the one that failed.</li>
+          <li><strong>Read the reason.</strong> The test expected Gender "Female", but the popup says "Male". The Elemen line points to the second cell in the Gender row.</li>
+          <li><strong>Open the location.</strong> Skenario, Step, and Kode each open the file at the exact line. Use the tabs to see what is there.</li>
+          <li><strong>Decide what is wrong.</strong> Here the app is right and the expected data is wrong, so the fix goes in the JSON file.</li>
+        </ol>
+
+        <div>
+          <div class="tabs" role="tablist" aria-label="FORM-01 failure locations">
+            <button class="tab" role="tab" id="tab-scenario" aria-controls="panel-code" aria-selected="true" data-key="scenario">Scenario<small>.feature:11</small></button>
+            <button class="tab" role="tab" id="tab-step" aria-controls="panel-code" aria-selected="false" tabindex="-1" data-key="step">Step<small>.steps.ts:72</small></button>
+            <button class="tab" role="tab" id="tab-code" aria-controls="panel-code" aria-selected="false" tabindex="-1" data-key="code">Code<small>.page.ts:94</small></button>
+            <button class="tab" role="tab" id="tab-data" aria-controls="panel-code" aria-selected="false" tabindex="-1" data-key="data">Data<small>.json:19</small></button>
+          </div>
+          <div class="code" role="tabpanel" id="panel-code" aria-labelledby="tab-scenario" tabindex="0">
+            <div class="code-head"><b id="code-file">features/practice-form/practice-form.feature</b><span id="code-line">line 11</span></div>
+            <pre id="code-body"></pre>
+            <p class="code-note" id="code-note"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reasons">
+        <h3>The first line of a failure usually tells you where to look</h3>
+        <table>
+          <thead><tr><th scope="col">Failure reason</th><th scope="col">What to check</th></tr></thead>
+          <tbody>
+            <tr><td><code>Teks tidak sesuai</code><span class="gloss">Text does not match</span></td><td>The expected value in <code>test-data/&lt;feature&gt;.json</code>. If the data is right, the app probably changed or has a bug.</td></tr>
+            <tr><td><code>Jumlah elemen tidak sesuai</code><span class="gloss">Element count does not match</span></td><td>The test data or the app's behavior, such as the number of rows in a table.</td></tr>
+            <tr><td><code>Elemen tidak terlihat di layar, elemen tidak ditemukan di halaman</code><span class="gloss">Element not visible, element not found on the page</span></td><td>The selector in <code>features/&lt;feature&gt;/&lt;feature&gt;.locators.ts</code>. Usually the page layout changed.</td></tr>
+            <tr><td><code>Elemen tidak muncul setelah ... detik</code><span class="gloss">Element did not appear after ... seconds</span></td><td>The selector, or a slow page.</td></tr>
+            <tr><td><code>Tidak bisa mengklik dalam ... detik</code><span class="gloss">Could not click within ... seconds</span></td><td>The selector, or an element covered by something else, such as a popup.</td></tr>
+            <tr><td><code>Step ini belum punya step definition</code><span class="gloss">This step has no step definition yet</span></td><td>A new step in the <code>.feature</code> file with no match in the steps file.</td></tr>
+            <tr><td><code>Halaman tidak bisa dibuka (...)</code><span class="gloss">The page could not be opened</span></td><td>The internet connection, or demoqa itself being down.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="report" aria-labelledby="t-report">
+    <div class="wrap">
+      <p class="step"><b>[3/6]</b> Report</p>
+      <h2 id="t-report">An HTML report a PM can read without opening the code</h2>
+      <p class="intro"><code>npm test</code> writes <code>reports/test-report.html</code> and opens it in the browser. The report is a single file, so you can double-click it or send it to someone without a server.</p>
+
+      <div class="report-grid">
+        <figure>
+          <div class="shot shot-lead"><img src="images/report-custom-overview.png" width="1600" height="1075" alt="Custom HTML report, Overview tab: 80% passed, 1 of 5 scenarios failed, with FORM-01 under Needs attention" loading="lazy"></div>
+          <figcaption>The Overview tab, from the same run as the terminal example above.</figcaption>
+        </figure>
+        <dl class="report-tabs">
+          <div><dt>Overview</dt><dd>Pass rate, results per page, failed test cases, and the duration of each test case.</dd></div>
+          <div><dt>Scenarios &amp; Steps</dt><dd>Every test case and its steps with status, duration, logs, error messages, and screenshots. You can search and filter by status.</dd></div>
+          <div><dt>Screenshots</dt><dd>Every screenshot in one gallery, taken at each result check and whenever a test case fails.</dd></div>
+          <div><dt>Errors &amp; Warnings</dt><dd>All failures in one list, with stack traces that use paths relative to the project folder.</dd></div>
+          <div><dt>Environment</dt><dd>The tested URL, browser, viewport, timeout, tags, and the Node.js, Cucumber, and Playwright versions.</dd></div>
+        </dl>
+      </div>
+
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="images/report-custom-screenshots.png" width="1600" height="1075" alt="Custom HTML report, screenshot gallery from every check" loading="lazy"></div>
+          <figcaption>The screenshot gallery. Cucumber's default report has nothing like it.</figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="images/report-bawaan.png" width="1600" height="1075" alt="Default Cucumber HTML report, for comparison" loading="lazy"></div>
+          <figcaption>For comparison: Cucumber's default report, which prints the technical error as-is under the failed step.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="coverage" aria-labelledby="t-coverage">
+    <div class="wrap">
+      <p class="step"><b>[4/6]</b> Coverage</p>
+      <h2 id="t-coverage">28 scenarios, most of them feeding the app bad input</h2>
+      <p class="intro">11 positive scenarios check that each feature works as intended. 17 negative scenarios check that the app rejects wrong input or actions. Every scenario has its own TC number and can be run by tag.</p>
+
+      <ul class="cover">
+        <li>
+          <div>
+            <h3>Web Tables</h3>
+            <p class="tc"><a href="https://demoqa.com/webtables">demoqa.com/webtables</a> · WEBTABLES-01 to 09</p>
+            <div class="bar" role="img" aria-label="3 positive, 6 negative"><span style="flex:3"></span><span style="flex:6"></span></div>
+          </div>
+          <dl>
+            <div><dt class="ok">3 positive</dt><dd>Adds 5 users at once and checks each one in the table, searches for a user, deletes a user.</dd></div>
+            <div><dt class="ng">6 negative</dt><dd>A search with no results, and the Add form rejecting an email without @, an empty First Name, letters in Age or Salary, and an empty form.</dd></div>
+          </dl>
+        </li>
+        <li>
+          <div>
+            <h3>Student Registration Form</h3>
+            <p class="tc"><a href="https://demoqa.com/automation-practice-form">demoqa.com/automation-practice-form</a> · FORM-01 to 10</p>
+            <div class="bar" role="img" aria-label="3 positive, 7 negative"><span style="flex:3"></span><span style="flex:7"></span></div>
+          </div>
+          <dl>
+            <div><dt class="ok">3 positive</dt><dd>All fields filled, only the required fields filled, and a Mobile number over 10 digits cut down to 10.</dd></div>
+            <div><dt class="ng">7 negative</dt><dd>Empty First Name or Last Name, Mobile under 10 digits or containing letters, an email without @, no Gender selected, and an empty form.</dd></div>
+          </dl>
+        </li>
+        <li>
+          <div>
+            <h3>Resizable</h3>
+            <p class="tc"><a href="https://demoqa.com/resizable">demoqa.com/resizable</a> · RESIZABLE-01 to 05</p>
+            <div class="bar" role="img" aria-label="3 positive, 2 negative"><span style="flex:3"></span><span style="flex:2"></span></div>
+          </div>
+          <dl>
+            <div><dt class="ok">3 positive</dt><dd>Resizing to 400 × 200, to the 150 × 150 minimum, and to the 500 × 300 maximum.</dd></div>
+            <div><dt class="ng">2 negative</dt><dd>Dragging past the maximum or below the minimum, where the box has to stop at the limit.</dd></div>
+          </dl>
+        </li>
+        <li>
+          <div>
+            <h3>Droppable</h3>
+            <p class="tc"><a href="https://demoqa.com/droppable">demoqa.com/droppable</a> · DROPPABLE-01 to 04</p>
+            <div class="bar" role="img" aria-label="2 positive, 2 negative"><span style="flex:2"></span><span style="flex:2"></span></div>
+          </div>
+          <dl>
+            <div><dt class="ok">2 positive</dt><dd>The Drag Me box is accepted on the Simple tab, and the Acceptable box is accepted on the Accept tab.</dd></div>
+            <div><dt class="ng">2 negative</dt><dd>A box dropped outside the target, and the Not Acceptable box rejected on the Accept tab.</dd></div>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="structure" aria-labelledby="t-structure">
+    <div class="wrap">
+      <p class="step"><b>[5/6]</b> Structure</p>
+      <h2 id="t-structure">Every layer only talks to the one below it</h2>
+      <p class="intro">Feature files only hold steps in plain language. Page objects never call Playwright directly: every action goes through <code>UIAction</code> and every check through <code>UIAssert</code>, so waiting and failure messages work the same way on every page.</p>
+
+      <div class="structure">
+<pre class="tree" aria-label="Project folder structure">features/
+  web-tables/
+    web-tables.feature      <span class="d">scenarios in plain language</span>
+    web-tables.steps.ts     <span class="d">connects scenarios to the page</span>
+    web-tables.page.ts      <span class="d">page actions and checks (verify)</span>
+    web-tables.locators.ts  <span class="d">element selectors</span>
+  droppable/                <span class="d">same layout</span>
+  resizable/                <span class="d">same layout</span>
+  practice-form/            <span class="d">same layout</span>
+components/                 <span class="d">UI modules shared across pages</span>
+src/
+  core/
+    UIAction.ts             <span class="d">every browser action</span>
+    UIAssert.ts             <span class="d">every check, retried until it passes</span>
+  config/env.ts             <span class="d">settings from .env</span>
+  utils/browser.ts          <span class="d">BrowserManager, one browser per scenario</span>
+support/
+  hooks.ts                  <span class="d">scenario lifecycle, screenshots, video</span>
+  world.ts                  <span class="d">TestWorld, state for one scenario</span>
+test-data/                  <span class="d">test data per page, as JSON</span>
+tools/                      <span class="d">HTML report, suite command, extension</span></pre>
+
+        <ol class="layers">
+          <li><code>.feature</code><p>Test steps that non-technical people can read. The <b>Skenario</b> location in a failure points here.</p></li>
+          <li><code>.steps.ts</code><p>A thin link between a sentence in the scenario and a method in the page object. The <b>Step</b> location points here.</p></li>
+          <li><code>.page.ts</code> and <code>.locators.ts</code><p>Page actions and checks, with selectors kept in their own file. The <b>Kode</b> location points here.</p></li>
+          <li><code>src/core/</code><p><code>UIAction</code> and <code>UIAssert</code>. Checks retry on a condition, never a fixed sleep, and fail with a message the terminal turns into plain words.</p></li>
+          <li><code>test-data/*.json</code><p>Input values and expected values for each page.</p></li>
+        </ol>
+      </div>
+
+      <div class="extras">
+        <div>
+          <h3>Test Suites</h3>
+          <p>Four ready-made suites (Regresi, Smoke, Positif, Negatif) live in <code>test-suites.json</code> and run in the listed order with <code>npm run suite -- Smoke</code>.</p>
+        </div>
+        <div>
+          <h3>VS Code extension</h3>
+          <p>Optional, and also built by me. It shows every scenario in the Testing panel, runs them by tag, and lets you build Test Suites with checkboxes and drag-to-reorder.</p>
+        </div>
+        <div>
+          <h3>Unit tests for the error messages</h3>
+          <p>The plain-language failure sentences have their own unit tests, which run with the TypeScript type check and the format check in <code>npm run check</code>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="run" aria-labelledby="t-run">
+    <div class="wrap">
+      <p class="step"><b>[6/6]</b> Run it</p>
+      <h2 id="t-run">Run it on your own machine</h2>
+      <p class="intro">You need Node.js 20.12 or newer. The commands are the same on macOS, Linux, and Windows. When the tests finish, the HTML report opens in your browser.</p>
+
+      <div class="run">
+        <ol class="cmds">
+          <li><p>Get the code</p><div class="cmd"><code>git clone https://github.com/yedijaezra29/demoqa-automation.git</code><button class="copy" type="button">Copy</button></div></li>
+          <li><p>Install dependencies (once)</p><div class="cmd"><code>npm install</code><button class="copy" type="button">Copy</button></div></li>
+          <li><p>Install Chromium for Playwright</p><div class="cmd"><code>npx playwright install chromium</code><button class="copy" type="button">Copy</button></div></li>
+          <li><p>Run every test and open the report</p><div class="cmd"><code>npm test</code><button class="copy" type="button">Copy</button></div></li>
+          <li><p>Or run only the negative tests</p><div class="cmd"><code>npm test -- --tags @negative</code><button class="copy" type="button">Copy</button></div></li>
+        </ol>
+        <p class="sr" aria-live="polite" id="copy-status"></p>
+
+        <div>
+          <h3>Settings in <code>.env</code></h3>
+          <table class="env">
+            <thead><tr><th scope="col">Setting</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>BROWSER</code></td><td><code>chromium</code></td><td>Also accepts <code>firefox</code> or <code>webkit</code></td></tr>
+              <tr><td><code>HEADLESS</code></td><td><code>true</code></td><td>Set to <code>false</code> to watch the browser</td></tr>
+              <tr><td><code>DEFAULT_TIMEOUT</code></td><td><code>15000</code></td><td>How long to wait for an element, in milliseconds</td></tr>
+              <tr><td><code>STEP_SCREENSHOT</code></td><td><code>expected</code></td><td>Screenshot at every check, every step, or only on failure</td></tr>
+              <tr><td><code>REPORT_OPEN</code></td><td><code>true</code></td><td>Set to <code>false</code> to stop the report opening by itself</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Built and maintained by yedijaezra.</span>
+    <a href="https://github.com/yedijaezra29/demoqa-automation">github.com/yedijaezra29/demoqa-automation</a>
+  </div>
+</footer>
+
+<script>
+  // Real file contents from the repo, trimmed to the lines around each failure location.
+  var FILES = {
+    scenario: {
+      file: 'features/practice-form/practice-form.feature', hit: 11, start: 4,
+      lines: [
+        '  Background:',
+        '    Given user membuka halaman Student Registration Form',
+        '',
+        '  @FORM-01 @positive',
+        '  Scenario: Mengisi semua field lalu submit',
+        '    When user mengisi semua field dengan data student',
+        '    And user menekan tombol Submit',
+        '    Then popup konfirmasi menampilkan semua data student'
+      ],
+      note: 'The failing step, in plain language. It shows which part of the flow broke: the confirmation popup check.'
+    },
+    step: {
+      file: 'features/practice-form/practice-form.steps.ts', hit: 72, start: 72,
+      lines: [
+        'Then(',
+        "  'popup konfirmasi menampilkan semua data student',",
+        '  async function (this: TestWorld) {',
+        '    await practiceFormPage(this).verifyConfirmation(',
+        '      testData.practiceForm().confirmation,',
+        '    );',
+        '  },',
+        ');'
+      ],
+      note: 'The step definition for that sentence. It loads the expected data from test-data and calls the check in the page object.'
+    },
+    code: {
+      file: 'features/practice-form/practice-form.page.ts', hit: 94, start: 86,
+      lines: [
+        '  async verifyConfirmation(expected: Record<string, string>): Promise<void> {',
+        '    const popup = this.locators.confirmation;',
+        '',
+        "    await UIAssert.visible(popup, 'Popup konfirmasi');",
+        "    await UIAssert.css(popup, 'opacity', '1', 'Popup konfirmasi');",
+        "    await UIAssert.containsText(popup, CONFIRMATION_TITLE, 'Popup konfirmasi');",
+        '',
+        '    for (const [label, value] of Object.entries(expected)) {',
+        '      await UIAssert.text(',
+        '        this.locators.confirmationValue(label),',
+        '        value,',
+        '        `Nilai ${label} di popup konfirmasi`,',
+        '      );',
+        '    }',
+        '  }'
+      ],
+      note: 'The check that failed, made through UIAssert. Each row of the popup is compared with the expected data, and the Gender row does not match. The last argument is the name that shows up as Elemen.'
+    },
+    data: {
+      file: 'test-data/practice-form.json', hit: 19, start: 16,
+      lines: [
+        '  "confirmation": {',
+        '    "Student Name": "Budi Santoso",',
+        '    "Student Email": "budi.santoso@example.com",',
+        '    "Gender": "Female",',
+        '    "Mobile": "0812345678",',
+        '    "Date of Birth": "15 May,2000",',
+        '    "Subjects": "Maths, English",',
+        '    "Hobbies": "Sports, Music",'
+      ],
+      note: 'The actual cause. I changed "Male" to "Female" here for this demo, so the app is right and the fix belongs in the data file.'
+    }
+  };
+
+  (function tabsSetup() {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    var panel = document.getElementById('panel-code');
+    var body = document.getElementById('code-body');
+
+    function render(key) {
+      var f = FILES[key];
+      document.getElementById('code-file').textContent = f.file;
+      document.getElementById('code-line').textContent = 'line ' + f.hit;
+      document.getElementById('code-note').textContent = f.note;
+      body.textContent = '';
+      f.lines.forEach(function (text, i) {
+        var n = f.start + i;
+        var line = document.createElement('span');
+        line.className = 'ln' + (n === f.hit ? ' hit' : '');
+        line.setAttribute('data-n', n);
+        line.textContent = text || ' ';
+        body.appendChild(line);
+      });
+    }
+
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      panel.setAttribute('aria-labelledby', tab.id);
+      render(tab.getAttribute('data-key'));
+      if (focus) tab.focus();
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab, false); });
+      tab.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+        if (e.key === 'Home') next = tabs[0];
+        if (e.key === 'End') next = tabs[tabs.length - 1];
+        if (next) { e.preventDefault(); select(next, true); }
+      });
+    });
+    render('scenario');
+  })();
+
+  (function themeSetup() {
+    var btn = document.querySelector('.theme-btn');
+    var root = document.documentElement;
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function isDark() {
+      var t = root.getAttribute('data-theme');
+      return t ? t === 'dark' : media.matches;
+    }
+    function sync() {
+      var dark = isDark();
+      btn.textContent = dark ? 'Light' : 'Dark';
+      btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+      btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    }
+    btn.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      sync();
+    });
+    if (media.addEventListener) media.addEventListener('change', sync);
+    sync();
+  })();
+
+  (function menuSetup() {
+    var btn = document.querySelector('.menu-btn');
+    var menu = document.getElementById('mobile-nav');
+    function close(returnFocus) {
+      menu.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      if (returnFocus) btn.focus();
+    }
+    btn.addEventListener('click', function () {
+      var open = menu.hidden;
+      menu.hidden = !open;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) menu.querySelector('a').focus();
+    });
+    menu.addEventListener('click', function (e) { if (e.target.closest('a')) close(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !menu.hidden) close(true); });
+  })();
+
+  (function copySetup() {
+    var status = document.getElementById('copy-status');
+    document.querySelectorAll('.copy').forEach(function (btn) {
+      btn.setAttribute('aria-label', 'Copy command: ' + btn.previousElementSibling.textContent);
+      btn.addEventListener('click', function () {
+        var text = btn.previousElementSibling.textContent;
+        function show(state, label, message) {
+          btn.setAttribute('data-state', state);
+          btn.textContent = label;
+          status.textContent = message;
+          clearTimeout(btn._t);
+          btn._t = setTimeout(function () { btn.removeAttribute('data-state'); btn.textContent = 'Copy'; }, 2000);
+        }
+        if (!navigator.clipboard) { show('error', 'Copy manually', 'This browser blocks copying. Select the command text instead.'); return; }
+        navigator.clipboard.writeText(text).then(
+          function () { show('done', 'Copied', 'Command copied.'); },
+          function () { show('error', 'Copy manually', 'Copying failed. Select the command text instead.'); }
+        );
+      });
+    });
+  })();
+
+  // A broken image is swapped for a note with its path in the repo.
+  document.querySelectorAll('.shot img').forEach(function (img) {
+    function fail() {
+      var box = document.createElement('p');
+      box.className = 'img-fail';
+      box.textContent = 'This image did not load. The file is in the repo at docs/' + img.getAttribute('src');
+      img.replaceWith(box);
+    }
+    if (img.complete && img.naturalWidth === 0 && img.getAttribute('loading') !== 'lazy') fail();
+    else img.addEventListener('error', fail);
+  });
+</script>
+</body>
+</html>

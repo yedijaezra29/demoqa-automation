@@ -2,7 +2,7 @@ import { Given, Then, When } from '@cucumber/cucumber';
 
 import { pick, testData } from '../../test-data/test-data.ts';
 import { PracticeFormPage } from './practice-form.page.ts';
-import type { TestWorld } from '../support/world.ts';
+import type { TestWorld } from '../../support/world.ts';
 
 const practiceFormPage = (world: TestWorld): PracticeFormPage =>
   new PracticeFormPage(world.page);

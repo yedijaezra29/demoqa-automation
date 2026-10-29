@@ -13,6 +13,7 @@
     "test:droppable": "node --import tsx tools/report/cli.ts run test:raw --tags @droppable",
     "test:resizable": "node --import tsx tools/report/cli.ts run test:raw --tags @resizable",
     "test:practice-form": "node --import tsx tools/report/cli.ts run test:raw --tags @practice-form",
+    "test:headed": "cross-env HEADLESS=false node --import tsx tools/report/cli.ts run test:raw",
     "report": "node --import tsx tools/report/cli.ts generate",
     "report:open": "node --import tsx tools/report/cli.ts open",
     "report:clean": "node --import tsx tools/report/cli.ts clean",
@@ -21,8 +22,9 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.9.0",
-    "@playwright/test": "1.63.0",
     "@types/node": "26.6.3",
+    "cross-env": "10.1.0",
+    "playwright": "1.63.0",
     "prettier": "3.9.9",
     "tsx": "4.23.15",
     "typescript": "7.0.2"

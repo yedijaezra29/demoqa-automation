@@ -1,16 +1,12 @@
 import { setWorldConstructor, World } from '@cucumber/cucumber';
-import type { Browser, BrowserContext, Page } from '@playwright/test';
+import type { Page } from 'playwright';
 
-import type { RequiredField, User } from '../../test-data/test-data.ts';
-import type { DroppableTab } from '../droppable/droppable.locators.ts';
-import type { UserField } from '../web-tables/web-tables.locators.ts';
-import { env } from './env.ts';
+import type { DroppableTab } from '../features/droppable/droppable.locators.ts';
+import type { UserField } from '../features/web-tables/web-tables.locators.ts';
+import { env } from '../src/config/env.ts';
+import type { RequiredField, User } from '../test-data/test-data.ts';
 
 export class TestWorld extends World {
-  browser!: Browser;
-
-  context!: BrowserContext;
-
   page!: Page;
 
   rowsBefore = 0;

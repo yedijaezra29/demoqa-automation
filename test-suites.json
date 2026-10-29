@@ -4,169 +4,169 @@
       "name": "Regresi",
       "entries": [
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Menambahkan banyak user sekaligus",
           "tag": "@WEBTABLES-01",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Mencari user yang sudah ditambahkan",
           "tag": "@WEBTABLES-02",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Menghapus user dari tabel",
           "tag": "@WEBTABLES-03",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Mencari user yang tidak ada di tabel",
           "tag": "@WEBTABLES-04",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak email tanpa @",
           "tag": "@WEBTABLES-05",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak First Name kosong",
           "tag": "@WEBTABLES-06",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak Age berisi huruf",
           "tag": "@WEBTABLES-07",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak Salary berisi huruf",
           "tag": "@WEBTABLES-08",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak isian kosong",
           "tag": "@WEBTABLES-09",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Menyeret kotak Drag Me ke area target",
           "tag": "@DROPPABLE-01",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Area target di tab Accept menerima kotak Acceptable",
           "tag": "@DROPPABLE-02",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Melepas kotak di luar area target",
           "tag": "@DROPPABLE-03",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Area target di tab Accept menolak kotak Not Acceptable",
           "tag": "@DROPPABLE-04",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 400 x 200 piksel",
           "tag": "@RESIZABLE-01",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 150 x 150 piksel",
           "tag": "@RESIZABLE-02",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 500 x 300 piksel",
           "tag": "@RESIZABLE-03",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Ukuran kotak tertahan di batas saat ditarik ke 600 x 400 piksel",
           "tag": "@RESIZABLE-04",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Ukuran kotak tertahan di batas saat ditarik ke 100 x 100 piksel",
           "tag": "@RESIZABLE-05",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mengisi semua field lalu submit",
           "tag": "@FORM-01",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mengisi field wajib saja sudah cukup untuk submit",
           "tag": "@FORM-02",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mobile lebih dari 10 digit hanya menyimpan 10 digit pertama",
           "tag": "@FORM-03",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak First Name kosong",
           "tag": "@FORM-04",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Last Name kosong",
           "tag": "@FORM-05",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Mobile kurang dari 10 digit",
           "tag": "@FORM-06",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Mobile berisi huruf",
           "tag": "@FORM-07",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak email tanpa @",
           "tag": "@FORM-08",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Gender tidak dipilih",
           "tag": "@FORM-09",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak jika dikirim kosong",
           "tag": "@FORM-10",
           "checked": true
@@ -177,25 +177,25 @@
       "name": "Smoke",
       "entries": [
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Menambahkan banyak user sekaligus",
           "tag": "@WEBTABLES-01",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Menyeret kotak Drag Me ke area target",
           "tag": "@DROPPABLE-01",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 400 x 200 piksel",
           "tag": "@RESIZABLE-01",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mengisi semua field lalu submit",
           "tag": "@FORM-01",
           "checked": true
@@ -206,67 +206,67 @@
       "name": "Positif",
       "entries": [
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Menambahkan banyak user sekaligus",
           "tag": "@WEBTABLES-01",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Mencari user yang sudah ditambahkan",
           "tag": "@WEBTABLES-02",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Menghapus user dari tabel",
           "tag": "@WEBTABLES-03",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Menyeret kotak Drag Me ke area target",
           "tag": "@DROPPABLE-01",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Area target di tab Accept menerima kotak Acceptable",
           "tag": "@DROPPABLE-02",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 400 x 200 piksel",
           "tag": "@RESIZABLE-01",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 150 x 150 piksel",
           "tag": "@RESIZABLE-02",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Mengubah ukuran kotak menjadi 500 x 300 piksel",
           "tag": "@RESIZABLE-03",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mengisi semua field lalu submit",
           "tag": "@FORM-01",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mengisi field wajib saja sudah cukup untuk submit",
           "tag": "@FORM-02",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Mobile lebih dari 10 digit hanya menyimpan 10 digit pertama",
           "tag": "@FORM-03",
           "checked": true
@@ -277,103 +277,103 @@
       "name": "Negatif",
       "entries": [
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Mencari user yang tidak ada di tabel",
           "tag": "@WEBTABLES-04",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak email tanpa @",
           "tag": "@WEBTABLES-05",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak First Name kosong",
           "tag": "@WEBTABLES-06",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak Age berisi huruf",
           "tag": "@WEBTABLES-07",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak Salary berisi huruf",
           "tag": "@WEBTABLES-08",
           "checked": true
         },
         {
-          "feature": "tests/web-tables/web-tables.feature",
+          "feature": "features/web-tables/web-tables.feature",
           "name": "Form Add menolak isian kosong",
           "tag": "@WEBTABLES-09",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Melepas kotak di luar area target",
           "tag": "@DROPPABLE-03",
           "checked": true
         },
         {
-          "feature": "tests/droppable/droppable.feature",
+          "feature": "features/droppable/droppable.feature",
           "name": "Area target di tab Accept menolak kotak Not Acceptable",
           "tag": "@DROPPABLE-04",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Ukuran kotak tertahan di batas saat ditarik ke 600 x 400 piksel",
           "tag": "@RESIZABLE-04",
           "checked": true
         },
         {
-          "feature": "tests/resizable/resizable.feature",
+          "feature": "features/resizable/resizable.feature",
           "name": "Ukuran kotak tertahan di batas saat ditarik ke 100 x 100 piksel",
           "tag": "@RESIZABLE-05",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak First Name kosong",
           "tag": "@FORM-04",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Last Name kosong",
           "tag": "@FORM-05",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Mobile kurang dari 10 digit",
           "tag": "@FORM-06",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Mobile berisi huruf",
           "tag": "@FORM-07",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak email tanpa @",
           "tag": "@FORM-08",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak Gender tidak dipilih",
           "tag": "@FORM-09",
           "checked": true
         },
         {
-          "feature": "tests/practice-form/practice-form.feature",
+          "feature": "features/practice-form/practice-form.feature",
           "name": "Form menolak jika dikirim kosong",
           "tag": "@FORM-10",
           "checked": true

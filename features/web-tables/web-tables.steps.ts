@@ -2,7 +2,7 @@ import { Given, Then, When } from '@cucumber/cucumber';
 
 import { pick, testData } from '../../test-data/test-data.ts';
 import { WebTablesPage } from './web-tables.page.ts';
-import type { TestWorld } from '../support/world.ts';
+import type { TestWorld } from '../../support/world.ts';
 
 const webTablesPage = (world: TestWorld): WebTablesPage =>
   new WebTablesPage(world.page);

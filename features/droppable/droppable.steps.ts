@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber';
 import { testData } from '../../test-data/test-data.ts';
 import type { DroppableTab } from './droppable.locators.ts';
 import { DroppablePage } from './droppable.page.ts';
-import type { TestWorld } from '../support/world.ts';
+import type { TestWorld } from '../../support/world.ts';
 
 const droppablePage = (world: TestWorld): DroppablePage =>
   new DroppablePage(world.page, world.droppableTab);

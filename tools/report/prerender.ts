@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 
-import { chromium } from '@playwright/test';
+import { chromium } from 'playwright';
 
 const THUMBNAIL_WIDTH = 480;
 

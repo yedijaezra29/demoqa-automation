@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 
-import type { DroppableTab } from '../tests/droppable/droppable.locators.ts';
-import type { FormField } from '../tests/practice-form/practice-form.locators.ts';
-import type { UserField } from '../tests/web-tables/web-tables.locators.ts';
+import type { DroppableTab } from '../features/droppable/droppable.locators.ts';
+import type { FormField } from '../features/practice-form/practice-form.locators.ts';
+import type { UserField } from '../features/web-tables/web-tables.locators.ts';
 
 export interface User {
   firstName: string;

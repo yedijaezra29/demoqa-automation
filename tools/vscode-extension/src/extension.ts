@@ -31,7 +31,7 @@ const SAFE_TAG = /^@[\w\-.]+$/;
 const TAG_EXPRESSION = /^[@\w\-()\s]+$/;
 const TAIL = 64;
 const WINDOWS = process.platform === 'win32';
-const FEATURES = 'tests/**/*.feature';
+const FEATURES = 'features/**/*.feature';
 const CHUNK = 4 * 1024 * 1024;
 const FRAME = /^\s*at (?:(.*?) \()?(.+?):(\d+):(\d+)\)?$/;
 const INTERNAL_FRAME = /\(node:|at node:|node_modules[\\/]/;

@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import type { Locator, Page } from 'playwright';
 
 export type UserField =
   'First Name' | 'Last Name' | 'Email' | 'Age' | 'Salary' | 'Department';

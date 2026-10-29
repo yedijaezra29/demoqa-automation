@@ -41,6 +41,10 @@ export const env = {
   headless: (process.env.HEADLESS ?? 'true').toLowerCase() !== 'false',
   timeout: Number(process.env.DEFAULT_TIMEOUT ?? 15000),
   screenshot: screenshotMode(process.env.STEP_SCREENSHOT),
+  ignoreHTTPSErrors:
+    (process.env.IGNORE_HTTPS_ERRORS ?? 'false').toLowerCase() === 'true',
+  isRecordingVideo:
+    (process.env.RECORD_VIDEO ?? 'false').toLowerCase() === 'true',
   locale: 'en-US',
   viewport: { width: 1366, height: 900 },
 };

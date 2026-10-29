@@ -165,3 +165,74 @@ test('plain errors stay as they are', () => {
   ]);
   assert.deepEqual(reasons(undefined), ['Gagal tanpa pesan error']);
 });
+
+test('UIAssert.text', () => {
+  assert.deepEqual(
+    reasons(
+      [
+        'Error: Nilai Gender di popup konfirmasi should display "Female" | last attempt: Expected "Female", received "Male" | attempts: 48, elapsed: 5003ms, timeout: 5000ms',
+        STACK,
+      ].join('\n'),
+    ),
+    [
+      'Teks tidak sesuai',
+      'Seharusnya: "Female"',
+      'Tertulis: "Male"',
+      'Elemen: Nilai Gender di popup konfirmasi',
+    ],
+  );
+});
+
+test('UIAssert.texts shows only the cells that differ', () => {
+  assert.deepEqual(
+    reasons(
+      'Error: Baris user a@b.c should display ["Cierra","Vegaa",""] | last attempt: Expected ["Cierra","Vegaa",""], received ["Cierra","Vega",""] | attempts: 3, elapsed: 5000ms, timeout: 5000ms',
+    ),
+    [
+      'Teks tidak sesuai',
+      'Seharusnya: "Vegaa"',
+      'Tertulis: "Vega"',
+      'Elemen: Baris user a@b.c',
+    ],
+  );
+});
+
+test('UIAssert.count', () => {
+  assert.deepEqual(
+    reasons(
+      'Error: Baris tabel should have 4 element(s) | last attempt: Expected 4, received 3 | attempts: 50, elapsed: 5001ms, timeout: 5000ms',
+    ),
+    [
+      'Jumlah elemen tidak sesuai',
+      'Seharusnya: 4',
+      'Tertulis: 3',
+      'Elemen: Baris tabel',
+    ],
+  );
+});
+
+test('UIAssert with a Playwright timeout in the last attempt', () => {
+  assert.deepEqual(
+    reasons(
+      [
+        'Error: Popup konfirmasi should contain text "Thanks" | last attempt: locator.textContent: Timeout 15000ms exceeded.',
+        'Call log:',
+        "  - waiting for getByRole('dialog')",
+        ' | attempts: 1, elapsed: 15002ms, timeout: 5000ms',
+      ].join('\n'),
+    ),
+    [
+      'Teks tidak memuat yang diharapkan, elemen tidak ditemukan di halaman',
+      'Elemen: Popup konfirmasi',
+    ],
+  );
+});
+
+test('UIAssert.visible', () => {
+  assert.deepEqual(
+    reasons(
+      'Error: Form Registration should be visible | last attempt: Element is not visible | attempts: 50, elapsed: 5000ms, timeout: 5000ms',
+    ),
+    ['Elemen tidak terlihat di layar', 'Elemen: Form Registration'],
+  );
+});

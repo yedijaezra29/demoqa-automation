@@ -12,7 +12,10 @@
     "types": ["node"]
   },
   "include": [
-    "tests/**/*.ts",
+    "features/**/*.ts",
+    "support/**/*.ts",
+    "src/**/*.ts",
+    "components/**/*.ts",
     "test-data/**/*.ts",
     "tools/report/**/*.ts",
     "tools/suite.ts"

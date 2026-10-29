@@ -51,7 +51,7 @@ code --install-extension demoqa-tests.vsix --force
 
 - Extension hanya aktif di folder yang sudah dipercaya (Workspace Trust), karena tombol Run menjalankan command npm.
 - Tag, judul skenario, dan path dikutip dengan tanda kutip tunggal, dan input tag menolak karakter shell seperti `$`, `;`, dan backtick.
-- Extension tidak memakai jaringan. Yang dibaca hanya `tests/**/*.feature` dan `reports/messages.ndjson`.
+- Extension tidak memakai jaringan. Yang dibaca hanya `features/**/*.feature` dan `reports/messages.ndjson`.
 
 ## Batasan
 
